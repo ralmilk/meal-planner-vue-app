@@ -1,6 +1,11 @@
 <template>
    <div id="app">
       <the-header></the-header>
+      
+      <div id="main">
+        <the-calendar></the-calendar> 
+      </div>
+
       <the-footer></the-footer>
    </div>
 </template>
@@ -8,11 +13,14 @@
 <script>
 import TheHeader from './components/shared/TheHeader';
 import TheFooter from './components/shared/TheFooter';
+import TheCalendar from './components/calendar/TheCalendar';
+
 export default {
-   components: {
-      'the-header': TheHeader,
-      'the-footer': TheFooter
-   }
+    components: {
+       'the-header': TheHeader,
+       'the-footer': TheFooter,
+       'the-calendar': TheCalendar
+    }
 }
 </script>
 
@@ -27,7 +35,7 @@ html {
     background-repeat: no-repeat;
     height: 100%;
     min-width: 1250px;
-    min-height: 650px;
+    min-height: 1000px;
 }
 body {
     font-family: 'Ink Free Regular', sans-serif;
@@ -87,5 +95,26 @@ input[type=date] {
 input[type=checkbox],
 input[type=radio] {
     background-color: #eee;
+}
+
+#main {
+    clear: both;
+    width: 75%;
+    margin: 0 auto;
+}
+
+/************ Scrollbar *************/
+/* width */
+::-webkit-scrollbar {
+    width: 20px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background-color: rgba(55, 142, 153, 0.296);
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #303C6C; 
+    border-radius: 10px;
 }
 </style>
