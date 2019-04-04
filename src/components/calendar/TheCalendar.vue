@@ -37,31 +37,90 @@ import CalendarWeek from './CalendarWeek';
 export default {
    data: function() {
       return {
+         // CALENDAR PROPERTIES
          calendar: [],
-         meals: [],
          month: 0,
          year: 0,
          startDayOfWeek: 0,
          numDaysInMonth: 0,
          numWeeks: 0,
-         monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+         monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+
+         // MEAL PROPERTIES
+         mealsJson: [
+            {
+               "Id": 2,
+               "Servings": 4,
+               "StartDate": "04-01-2019",
+               "MealType": "L",
+               "RestaurantFlg": "N",
+               "PrepFlg": "Y",
+               "Title": "Chicken, jasmine rice, broccoli crown",
+               "Subcategory": "chicken"
+            },
+            {
+               "Id": 7,
+               "Servings": 6,
+               "StartDate": "04-28-2019",
+               "MealType": "D",
+               "RestaurantFlg": "N",
+               "PrepFlg": "N",
+               "Title": "broccoli crown, sugar",
+               "Subcategory": "vegetarian"
+            },
+            {
+               "Id": 3,
+               "Servings": 4,
+               "StartDate": "04-28-2019",
+               "MealType": "L",
+               "RestaurantFlg": "N",
+               "PrepFlg": "N",
+               "Title": "Test meal for processing",
+               "Subcategory": "pork"
+            },
+            {
+               "Id": 5,
+               "Servings": 6,
+               "StartDate": "04-07-2019",
+               "MealType": "B",
+               "RestaurantFlg": "N",
+               "PrepFlg": "N",
+               "Title": "blah blah blah",
+               "Subcategory": "pork"
+            },
+            {
+               "Id": 8,
+               "Servings": 2,
+               "StartDate": "05-03-2019",
+               "MealType": "B",
+               "RestaurantFlg": "N",
+               "PrepFlg": "N",
+               "Title": "blah blah blah",
+               "Subcategory": "beef"
+            }
+         ],
+         processedMeals: [],
+         meals: []
       }
-   },
+   },   
    watch: {
       month() {
-         this.setDataValues(false);
-         this.getCalendarArray();
+         this.setUp(false);
       }
    },
    created(){
-      this.setDataValues(true);
-      this.getCalendarArray();
-      this.getMealsMatrix();
+      this.setUp(true);
    },
    methods: {
-      /* NAVIGATION */
+      /* NAVIGATION AND SET UP*/
       goTo(value) {
          this.$emit('goTo', value);
+      },
+      setUp(initial){
+         this.setDataValues(initial);
+         this.getCalendarArray();
+         this.processMeals();
+         this.buildMealsMatrix();
       },
 
       /* CALENDAR METHODS */      
@@ -177,56 +236,106 @@ export default {
       },
 
       /* MEAL METHODS */
-      getMealsMatrix() {
-         let prepDay = {
-            id: 2,
-            title: "Prep Day",
-            servings: 1,
-            mealTime: "lunch",
-            subcategory: "chicken",
-            isPrepDay: true
-         };
-         let meal = {
-            id: 2,
-            title: "Chicken Nuggets, Uncle Ben's Rice, Spinach Squares",
-            servings: 4,
-            mealTime: "lunch",
-            subcategory: "chicken",
-            isPrepDay: false
-         };
-         let meal2 = {
-            id: 3,
-            title: "Nam Tok Beef, Rice, Lettuce Cups",
-            servings: 3,
-            mealTime: "dinner",
-            subcategory: "beef",
-            isPrepDay: false
-         };
-         let prepDay2 = {
-            id: 5,
-            title: "Prep Day",
-            servings: 1,
-            mealTime: "breakfast",
-            subcategory: "",
-            isPrepDay: true
-         };
-         let meal3 = {
-            id: 5,
-            title: "Banana Steel Cut Oats",
-            servings: 5,
-            mealTime: "brekfast",
-            subcategory: "",
-            isPrepDay: false
-         };
-         let mealMatrix = [
-            [[prepDay],[meal],[],[],[],[],[]],
-            [[prepDay2],[meal3],[],[],[],[],[]],
-            [[],[],[],[],[meal2],[],[]],
-            [[],[],[],[],[],[],[]],
-            [[],[],[],[],[],[],[]],
-            [[],[],[],[],[],[],[]],
-         ];
+      // getMealQueryDates() { // TODO: fix this, no prev/next month
+      //    let firstDay, lastDay;
+      //    firstDay = this.calendar[0][0];
+      //    lastDay = this.calendar[this.calendar.length - 1][6];
 
+      //    let startDate = {
+      //       month: firstDay > 7 ? this.prevMonth.month + 1 : this.month + 1,
+      //       year: this.month === 0 ? this.year - 1 : this.year
+      //    };
+      //    let endDate = {
+      //       month: lastDay <= 7 ? this.nextMonth.month + 1 : this.month + 1,
+      //       year: this.month === 11 ? this.year + 1 : this.year
+      //    };
+
+      //    return {
+      //       startDate: `${startDate.month}-${firstDay}-${startDate.year}`,
+      //       endDate: `${endDate.month}-${lastDay}-${endDate.year}`
+      //    }
+      // },
+      processMealType(mealType) {
+         if(mealType === "D") 
+            return "dinner";
+         else if(mealType === "L") 
+            return "lunch";
+         else 
+            return "breakfast";
+      },
+      processTitle(title) {
+         return title
+            .split(" ")
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
+      },
+      processPrepDate(startDate) {
+         let prepDate = new Date(startDate);
+         prepDate.setDate(prepDate.getDate() - 1);
+         return `${("0" + (prepDate.getMonth() + 1)).slice(-2)}`
+               + `-${("0" + prepDate.getDate()).slice(-2)}`
+               + `-${prepDate.getFullYear()}`;
+      },
+      processMeals() {
+         let processedMeals = [];
+         this.mealsJson.forEach(cur => {  
+            if(cur.PrepFlg === "Y") {
+               processedMeals.push({
+                  id: cur.Id,
+                  servings: 1,
+                  startDate: this.processPrepDate(cur.StartDate),
+                  mealType: this.processMealType(cur.MealType),
+                  isRestaurant: false,
+                  isPrepDay: true,
+                  title: "Prep Day",
+                  subcategory: cur.Subcategory
+               });
+            }
+      
+            processedMeals.push({
+               id: cur.Id,
+               servings: cur.Servings,
+               startDate: cur.StartDate,
+               mealType: this.processMealType(cur.MealType),
+               isRestaurant: cur.RestaurantFlg === "Y",
+               isPrepDay: false,
+               title: this.processTitle(cur.Title),
+               subcategory: cur.Subcategory
+            });
+         });
+
+         this.processedMeals = processedMeals;
+      },
+      buildMealsMatrix() {
+         // build empty matrix
+         let mealMatrix = [];
+         for(let i = 0; i < this.numWeeks; i++) {
+            mealMatrix.push([[],[],[],[],[],[],[]]);
+         }
+      
+         // populate matrix
+         this.processedMeals.forEach(meal => {
+            let month = meal.startDate.split("-")[0];
+            let date = meal.startDate.split("-")[1];
+            let matches = [];
+            for(let week = 0; week < this.numWeeks; week++) {
+               let dateIndex = this.calendar[week].findIndex(day => day == date);
+               if(dateIndex >= 0) {
+                  matches.push([week, dateIndex]);
+               }        
+            }
+
+            if(matches.length > 1) {
+               if ((date <= 7 && month <= (this.month + 1))
+                  || (date > 7 && month != (this.month + 1))) {
+                  matches.pop(); 
+               } else {
+                  matches.shift();
+               }
+            }
+
+            mealMatrix[matches[0][0]][matches[0][1]].push(meal);
+         });
          this.meals = mealMatrix;
       }
    },

@@ -1,7 +1,7 @@
 <template>
    <div @click="goTo(['mealForm', meal.id])"
         v-if="meal" class='meal pointer' 
-        :class="[meal.mealTime, checkPrepDayStatus()]" 
+        :class="[meal.mealType, checkPrepDayStatus()]" 
         :style="{ width: getWidth() }">
       <p class='meal-name' :class="meal.subcategory">{{ meal.title }}</p>
    </div>
