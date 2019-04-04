@@ -1,13 +1,19 @@
 <template>
    <header>
       <div class='container-width'>
-         <img src='../../assets/logo.png' id='header-logo' alt='Meal Planner Logo'>
+         <img src='../../assets/logo.png' 
+              id='header-logo' 
+              alt='Meal Planner Logo'
+              @click="goTo('calendar')">
       </div>
       <div id='navbar-top'>
          <ul class='container-width'>
-               <li class='navbar-link'>Recipes</li>
-               <li class='navbar-link'>Ingredients</li>
-               <li class='navbar-link no-right'>Settings</li>
+               <li class='navbar-link'
+                   @click="goTo('recipes')">Recipes</li>
+               <li class='navbar-link'
+                   @click="goTo('ingredients')">Ingredients</li>
+               <li class='navbar-link no-right'
+                   @click="goTo('settings')">Settings</li>
          </ul>
       </div>
       <div id='navbar-bottom'>
@@ -17,7 +23,13 @@
 </template>
 
 <script>
-
+export default {
+    methods: {
+        goTo(type) {
+            this.$emit('goTo', type);
+        }
+    }
+}
 </script>
 
 <style>
@@ -61,6 +73,7 @@ header {
     margin-top: -43px;
     margin-right: 45px;
     z-index: 2;
+    cursor: pointer;
 }
 .container-width{
     width: 75%;
