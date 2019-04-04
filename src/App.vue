@@ -18,14 +18,21 @@ import TheCalendar from './components/calendar/TheCalendar';
 export default {
     data: function() {
         return {
-            pageName: 'calendar'
+            pageName: 'calendar',
+            id: 0
             //pageNameOptions: ['calendar','recipes','ingredients','settings','mealForm','recipeForm','ingredientForm']
         }
     },
     methods: {
         goTo(value) {
             console.log(value);
-            this.pageName = value;
+            if(Array.isArray(value)) { // handles opening anything with an id
+                this.pageName = value[0];
+                this.id = value[1];
+            }
+            else {
+                this.pageName = value;
+            }
         }
     },
     components: {

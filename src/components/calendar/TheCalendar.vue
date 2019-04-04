@@ -22,7 +22,9 @@
             v-for='(week, index) in numWeeks' 
             :key="index"
             :week='calendar[index]'
-            :weekNum='index'>
+            :weekNum='index'
+            :meals='meals[index]'
+            @goTo='goTo'>
          </calendar-week>
       </div> 
    </div>
@@ -36,6 +38,7 @@ export default {
    data: function() {
       return {
          calendar: [],
+         meals: [],
          month: 0,
          year: 0,
          startDayOfWeek: 0,
@@ -53,11 +56,15 @@ export default {
    created(){
       this.setDataValues(true);
       this.getCalendarArray();
+      this.getMealsMatrix();
    },
    methods: {
+      /* NAVIGATION */
       goTo(value) {
          this.$emit('goTo', value);
       },
+
+      /* CALENDAR METHODS */      
       updateMonth(value) {
          if(value === 'prev') {
             this.month = this.month === 0 ? 11 : this.month - 1;
@@ -67,7 +74,6 @@ export default {
             this.year = this.month === 0 ? this.year + 1 : this.year;
          }
       },
-
       getCalendarArray() {
          let calendar = [];
          let date = 1;
@@ -168,6 +174,59 @@ export default {
                year: nextMonthYear,
                firstWeek: firstWeekArray
          };
+      },
+
+      /* MEAL METHODS */
+      getMealsMatrix() {
+         let prepDay = {
+            id: 2,
+            title: "Prep Day",
+            servings: 1,
+            mealTime: "lunch",
+            subcategory: "chicken",
+            isPrepDay: true
+         };
+         let meal = {
+            id: 2,
+            title: "Chicken Nuggets, Uncle Ben's Rice, Spinach Squares",
+            servings: 4,
+            mealTime: "lunch",
+            subcategory: "chicken",
+            isPrepDay: false
+         };
+         let meal2 = {
+            id: 3,
+            title: "Nam Tok Beef, Rice, Lettuce Cups",
+            servings: 3,
+            mealTime: "dinner",
+            subcategory: "beef",
+            isPrepDay: false
+         };
+         let prepDay2 = {
+            id: 5,
+            title: "Prep Day",
+            servings: 1,
+            mealTime: "breakfast",
+            subcategory: "",
+            isPrepDay: true
+         };
+         let meal3 = {
+            id: 5,
+            title: "Banana Steel Cut Oats",
+            servings: 5,
+            mealTime: "brekfast",
+            subcategory: "",
+            isPrepDay: false
+         };
+         let mealMatrix = [
+            [[prepDay],[meal],[],[],[],[],[]],
+            [[prepDay2],[meal3],[],[],[],[],[]],
+            [[],[],[],[],[meal2],[],[]],
+            [[],[],[],[],[],[],[]],
+            [[],[],[],[],[],[],[]],
+         ];
+
+         this.meals = mealMatrix;
       }
    },
    components: {
