@@ -1,9 +1,9 @@
 <template>
    <div id="app">
-      <the-header></the-header>
+      <the-header @goTo="goTo"></the-header>
       
       <div id="main">
-        <the-calendar></the-calendar> 
+        <the-calendar @goTo="goTo" v-if="pageName === 'calendar'"></the-calendar> 
       </div>
 
       <the-footer></the-footer>
@@ -16,6 +16,18 @@ import TheFooter from './components/shared/TheFooter';
 import TheCalendar from './components/calendar/TheCalendar';
 
 export default {
+    data: function() {
+        return {
+            pageName: 'calendar'
+            //pageNameOptions: ['calendar','recipes','ingredients','settings','mealForm','recipeForm','ingredientForm']
+        }
+    },
+    methods: {
+        goTo(value) {
+            console.log(value);
+            this.pageName = value;
+        }
+    },
     components: {
        'the-header': TheHeader,
        'the-footer': TheFooter,

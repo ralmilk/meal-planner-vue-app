@@ -1,15 +1,18 @@
 <template>
-   <div id='calendar-controls'>
-      <i id='left-arrow' 
-         class="fas fa-arrow-left fa-lg arrow"
-         @click="arrowClicked('prev')"></i>
-      <p>{{ month }} {{ year }}</p>
-      <i id='right-arrow' 
-         class="fas fa-arrow-right fa-lg arrow"
-         @click="arrowClicked('next')">
-         </i>
-      <a class='btn' href='#'>Add New Meal</a>
-   </div>
+    <div id='calendar-controls'>
+        <i id='left-arrow' 
+            class="fas fa-arrow-left fa-lg arrow"
+            @click="arrowClicked('prev')">
+        </i>
+        <p>{{ month }} {{ year }}</p>
+        <i id='right-arrow' 
+            class="fas fa-arrow-right fa-lg arrow"
+            @click="arrowClicked('next')">
+        </i>
+        <button class='btn' 
+                @click="goTo('mealForm')">Add New Meal
+        </button>
+    </div>
 </template>
 
 <script>
@@ -18,6 +21,9 @@ export default {
     methods: {
         arrowClicked(type) {
             this.$emit('arrowClicked', type);
+        },
+        goTo(type) {
+            this.$emit('goTo', type);
         }
     }
 }
@@ -44,10 +50,11 @@ export default {
 .arrow:hover {
     color:#fff;
 }
-#calendar-controls a:link,
-#calendar-controls a:visited {
+#calendar-controls button {
     background-color: #303C6C;
     color: #fff;
     margin-top: 10px;
+    cursor: pointer;
+    font-family: 'Ink Free Regular', sans-serif; /* Figure out why i need this */
 }
 </style>

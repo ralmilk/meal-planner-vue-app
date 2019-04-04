@@ -2,6 +2,7 @@
    <div>
       <the-calendar-controls
          @arrowClicked='updateMonth'
+         @goTo='goTo'
          :month='monthNames[month]'
          :year='year'>
       </the-calendar-controls>
@@ -54,6 +55,9 @@ export default {
       this.getCalendarArray();
    },
    methods: {
+      goTo(value) {
+         this.$emit('goTo', value);
+      },
       updateMonth(value) {
          if(value === 'prev') {
             this.month = this.month === 0 ? 11 : this.month - 1;
@@ -63,13 +67,14 @@ export default {
             this.year = this.month === 0 ? this.year + 1 : this.year;
          }
       },
+
       getCalendarArray() {
          let calendar = [];
          let date = 1;
          let dateUpperBound = 7;
          let weekNum = 0;
 
-         // set first week manually
+         // set first week of the month, if doesn't start on Sunday
          if (this.startDayOfWeek != 0) {
                let firstWeek = this.prevMonth.lastWeek;
                for(let j = this.startDayOfWeek; j <= 6; j++) {
@@ -93,7 +98,7 @@ export default {
                calendar.push(tempArray);
          } 
 
-         // handle last week
+         // handle last week of the month
          let lastWeek = [];
          for(date; date <= this.numDaysInMonth; date += 1) {
                lastWeek.push(date);
