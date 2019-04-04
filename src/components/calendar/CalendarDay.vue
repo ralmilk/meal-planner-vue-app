@@ -15,12 +15,7 @@ export default {
    },
    methods: {
       getMonthClass() {
-         if(this.isCurrentMonth) {
-            return "current-month";
-         }
-         else {
-            return "other-month";
-         }
+         return this.isCurrentMonth ? "current-month" : "other-month";
       }
    }
 }
@@ -35,11 +30,6 @@ export default {
     float: left;
     font-weight: bold;
 }
-/* .calendar-day:after {
-	content: "";
-	display: block;
-	padding-top: 70%;
-} */
 .calendar-date {
     margin: 3px;
 }
