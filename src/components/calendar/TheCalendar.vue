@@ -236,25 +236,25 @@ export default {
       },
 
       /* MEAL METHODS */
-      // getMealQueryDates() { // TODO: fix this, no prev/next month
-      //    let firstDay, lastDay;
-      //    firstDay = this.calendar[0][0];
-      //    lastDay = this.calendar[this.calendar.length - 1][6];
+      getMealQueryDates() {
+         let firstDay, lastDay;
+         firstDay = this.calendar[0][0];
+         lastDay = this.calendar[this.calendar.length - 1][6];
 
-      //    let startDate = {
-      //       month: firstDay > 7 ? this.prevMonth.month + 1 : this.month + 1,
-      //       year: this.month === 0 ? this.year - 1 : this.year
-      //    };
-      //    let endDate = {
-      //       month: lastDay <= 7 ? this.nextMonth.month + 1 : this.month + 1,
-      //       year: this.month === 11 ? this.year + 1 : this.year
-      //    };
+         let startDate = {
+            month: firstDay > 7 ? this.month : this.month + 1,
+            year: this.month === 0 ? this.year - 1 : this.year
+         };
+         let endDate = {
+            month: lastDay <= 7 ? this.month + 2 : this.month + 1,
+            year: this.month === 11 ? this.year + 1 : this.year
+         };
 
-      //    return {
-      //       startDate: `${startDate.month}-${firstDay}-${startDate.year}`,
-      //       endDate: `${endDate.month}-${lastDay}-${endDate.year}`
-      //    }
-      // },
+         return {
+            startDate: `${startDate.month}-${firstDay}-${startDate.year}`,
+            endDate: `${endDate.month}-${lastDay}-${endDate.year}`
+         }
+      },
       processMealType(mealType) {
          if(mealType === "D") 
             return "dinner";
@@ -326,7 +326,7 @@ export default {
             }
 
             if(matches.length > 1) {
-               if ((date <= 7 && month <= (this.month + 1))
+               if ((date <= 7 && month <= (this.month + 1)/* && month >= (calendar.month - 1)*/)
                   || (date > 7 && month != (this.month + 1))) {
                   matches.pop(); 
                } else {
@@ -334,7 +334,9 @@ export default {
                }
             }
 
-            mealMatrix[matches[0][0]][matches[0][1]].push(meal);
+            if(matches.length != 0) {
+               mealMatrix[matches[0][0]][matches[0][1]].push(meal);
+            }
          });
          this.meals = mealMatrix;
       }
