@@ -1,18 +1,18 @@
 <template>
-    <div id='calendar-controls'>
-        <i id='left-arrow' 
-            class="fas fa-arrow-left fa-lg arrow"
-            @click="arrowClicked('prev')">
-        </i>
-        <p>{{ month }} {{ year }}</p>
-        <i id='right-arrow' 
-            class="fas fa-arrow-right fa-lg arrow"
-            @click="arrowClicked('next')">
-        </i>
-        <button class='btn' 
-                @click="goTo('mealForm')">Add New Meal
-        </button>
-    </div>
+   <div id='calendar-controls'>
+      <i id='left-arrow' 
+         class="fas fa-arrow-left fa-lg arrow"
+         @click="arrowClicked('prev')">
+      </i>
+      <p>{{ month }} {{ year }}</p>
+      <i id='right-arrow' 
+         class="fas fa-arrow-right fa-lg arrow"
+         @click="arrowClicked('next')">
+      </i>
+      <button class='btn' 
+               @click="goTo('mealForm')">Add New Meal
+      </button>
+   </div>
 </template>
 
 <script>
@@ -24,7 +24,7 @@ export default {
             eventBus.$emit('arrowClicked', type);
         },
         goTo(type) {
-            eventBus.$emit('goTo', type);
+            eventBus.goTo(type);
         }
     }
 }

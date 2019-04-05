@@ -27,7 +27,7 @@ import { eventBus } from '../../main.js';
 export default {
     methods: {
         goTo(type) {
-            eventBus.$emit('goTo', type);
+            eventBus.goTo(type);
         }
     }
 }

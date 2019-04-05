@@ -15,8 +15,8 @@ export default {
    },
    methods: {
       /* NAVIGATION */
-      goTo(value) {
-         eventBus.$emit('goTo', value);
+      goTo(type) {
+         eventBus.goTo(type);
       },
       getWidth() {
          if(this.meal.isPrepDay) 
