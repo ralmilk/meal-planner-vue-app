@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { eventBus } from '../../main.js';
 export default {
    props: {
       meal: Object
@@ -15,7 +16,7 @@ export default {
    methods: {
       /* NAVIGATION */
       goTo(value) {
-         this.$emit('goTo', value);
+         eventBus.$emit('goTo', value);
       },
       getWidth() {
          if(this.meal.isPrepDay) 

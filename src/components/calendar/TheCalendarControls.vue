@@ -16,14 +16,15 @@
 </template>
 
 <script>
+import { eventBus } from '../../main.js';
 export default {
     props: ['month','year'],
     methods: {
         arrowClicked(type) {
-            this.$emit('arrowClicked', type);
+            eventBus.$emit('arrowClicked', type);
         },
         goTo(type) {
-            this.$emit('goTo', type);
+            eventBus.$emit('goTo', type);
         }
     }
 }
