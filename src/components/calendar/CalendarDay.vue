@@ -2,21 +2,37 @@
    <div class='day-wrapper' :class="dow">
       <div class='calendar-day' :class="getMonthClass()">
          <p class='calendar-date'>{{ date }}</p>
+         <meal @goTo='goTo'
+               v-for="(meal, index) in meals" 
+               :key="index"
+               :meal="meals[index]">
+         </meal>
       </div>
    </div>
 </template>
 
 <script>
+import Meal from './Meal';
+
 export default {
    props: {
       dow: String,
       date: Number,
-      isCurrentMonth: Boolean
+      isCurrentMonth: Boolean,
+      meals: Array // one day from the meal matrix
    },
    methods: {
+      /* NAVIGATION */
+      goTo(value) {
+         this.$emit('goTo', value);
+      },
+      
       getMonthClass() {
          return this.isCurrentMonth ? "current-month" : "other-month";
       }
+   },
+   components: {
+      meal: Meal
    }
 }
 </script>
