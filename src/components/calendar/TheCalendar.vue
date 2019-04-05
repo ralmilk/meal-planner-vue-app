@@ -1,8 +1,6 @@
 <template>
    <div>
       <the-calendar-controls
-         @arrowClicked='updateMonth'
-         @goTo='goTo'
          :month='monthNames[month]'
          :year='year'>
       </the-calendar-controls>
@@ -23,14 +21,14 @@
             :key="index"
             :week='calendar[index]'
             :weekNum='index'
-            :meals='meals[index]'
-            @goTo='goTo'>
+            :meals='meals[index]'>
          </calendar-week>
       </div> 
    </div>
 </template>
 
 <script>
+import { eventBus } from '../../main.js';
 import TheCalendarControls from './TheCalendarControls';
 import CalendarWeek from './CalendarWeek';
 
@@ -110,12 +108,12 @@ export default {
    },
    created(){
       this.setUp(true);
+      eventBus.$on('arrowClicked', (direction) => {
+         this.updateMonth(direction);
+      });
    },
    methods: {
-      /* NAVIGATION AND SET UP*/
-      goTo(value) {
-         this.$emit('goTo', value);
-      },
+      /* SET UP*/
       setUp(initial){
          this.setDataValues(initial);
          this.getCalendarArray();

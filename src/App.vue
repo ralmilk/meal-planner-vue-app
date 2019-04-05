@@ -1,9 +1,9 @@
 <template>
    <div id="app">
-      <the-header @goTo="goTo"></the-header>
+      <the-header></the-header>
       
       <div id="main">
-        <the-calendar @goTo="goTo" v-if="pageName === 'calendar'"></the-calendar> 
+        <the-calendar v-if="pageName === 'calendar'"></the-calendar> 
       </div>
 
       <the-footer></the-footer>
@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { eventBus } from './main.js';
 import TheHeader from './components/shared/TheHeader';
 import TheFooter from './components/shared/TheFooter';
 import TheCalendar from './components/calendar/TheCalendar';
@@ -23,8 +24,8 @@ export default {
             //pageNameOptions: ['calendar','recipes','ingredients','settings','mealForm','recipeForm','ingredientForm']
         }
     },
-    methods: {
-        goTo(value) {
+    created() {
+        eventBus.$on('goTo', (value) => {
             console.log(value);
             if(Array.isArray(value)) { // handles opening anything with an id
                 this.pageName = value[0];
@@ -33,7 +34,7 @@ export default {
             else {
                 this.pageName = value;
             }
-        }
+        });
     },
     components: {
        'the-header': TheHeader,

@@ -1,7 +1,6 @@
 <template>
    <div class='calendar-week'>
       <calendar-day 
-         @goTo='goTo'
          v-for='(day,index) in 7' 
          :key="index" 
          :dow="dayOfWeekClass[index]"
@@ -26,12 +25,7 @@ export default {
          dayOfWeekClass: ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'],
       }
    },
-   methods: {      
-      /* NAVIGATION */
-      goTo(value) {
-         this.$emit('goTo', value);
-      },
-      
+   methods: {        
       checkMonth(i) {
          if(this.week[0] > this.week[6]) // first or last week of the month
             return this.weekNum === 0 ? this.week[i] < 7 : this.week[i] >= 7;
