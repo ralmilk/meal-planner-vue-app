@@ -1,5 +1,5 @@
 <template>
-   <div @click="goTo(['mealForm', meal.id])"
+   <div @click="goTo(['the-meal-form', meal.id])"
         v-if="meal" class='meal pointer' 
         :class="[meal.mealType, checkPrepDayStatus()]" 
         :style="{ width: getWidth() }">

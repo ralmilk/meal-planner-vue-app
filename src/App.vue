@@ -17,7 +17,11 @@ import { eventBus } from './main.js';
 import TheHeader from './components/shared/TheHeader';
 import TheFooter from './components/shared/TheFooter';
 import TheCalendar from './components/calendar/TheCalendar';
+import TheMealForm from './components/forms/TheMealForm';
 import TheSettings from './components/settings/TheSettings';
+import TheRecipeForm from './components/forms/TheRecipeForm.vue';
+import TheIngredientsForm from './components/forms/TheIngredientsForm.vue';
+import TheList from './components/list/TheList';
 
 export default {
     data: function() {
@@ -42,7 +46,11 @@ export default {
        'the-header': TheHeader,
        'the-footer': TheFooter,
        'the-calendar': TheCalendar,
-       'the-settings': TheSettings
+       'the-settings': TheSettings,
+       'the-meal-form' : TheMealForm,
+       'the-recipe-form' : TheRecipeForm,
+       'the-ingredient-form' : TheIngredientsForm,
+       'the-list' : TheList
     }
 }
 </script>

@@ -10,7 +10,7 @@
          @click="arrowClicked('next')">
       </i>
       <button class='btn' 
-               @click="goTo('the-meal-form')">Add New Meal
+               @click="goTo('the-meal-form', 0)">Add New Meal
       </button>
    </div>
 </template>
