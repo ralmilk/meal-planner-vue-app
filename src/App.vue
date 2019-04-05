@@ -3,7 +3,9 @@
       <the-header></the-header>
       
       <div id="main">
-        <the-calendar v-if="pageName === 'calendar'"></the-calendar> 
+         <keep-alive include='the-calendar'>
+            <component :is='selectedComponent'></component>
+         </keep-alive>
       </div>
 
       <the-footer></the-footer>
@@ -15,31 +17,32 @@ import { eventBus } from './main.js';
 import TheHeader from './components/shared/TheHeader';
 import TheFooter from './components/shared/TheFooter';
 import TheCalendar from './components/calendar/TheCalendar';
+import TheSettings from './components/settings/TheSettings';
 
 export default {
     data: function() {
         return {
-            pageName: 'calendar',
+            selectedComponent: 'the-calendar',
             id: 0
-            //pageNameOptions: ['calendar','recipes','ingredients','settings','mealForm','recipeForm','ingredientForm']
         }
     },
     created() {
         eventBus.$on('goTo', (value) => {
             console.log(value);
             if(Array.isArray(value)) { // handles opening anything with an id
-                this.pageName = value[0];
+                this.selectedComponent = value[0];
                 this.id = value[1];
             }
             else {
-                this.pageName = value;
+                this.selectedComponent = value;
             }
         });
     },
     components: {
        'the-header': TheHeader,
        'the-footer': TheFooter,
-       'the-calendar': TheCalendar
+       'the-calendar': TheCalendar,
+       'the-settings': TheSettings
     }
 }
 </script>

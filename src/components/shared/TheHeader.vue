@@ -4,16 +4,16 @@
          <img src='../../assets/logo.png' 
               id='header-logo' 
               alt='Meal Planner Logo'
-              @click="goTo('calendar')">
+              @click="goTo('the-calendar')">
       </div>
       <div id='navbar-top'>
          <ul class='container-width'>
                <li class='navbar-link'
-                   @click="goTo('recipes')">Recipes</li>
+                   @click="goTo('the-recipes')">Recipes</li>
                <li class='navbar-link'
-                   @click="goTo('ingredients')">Ingredients</li>
+                   @click="goTo('the-ingredients')">Ingredients</li>
                <li class='navbar-link no-right'
-                   @click="goTo('settings')">Settings</li>
+                   @click="goTo('the-settings')">Settings</li>
          </ul>
       </div>
       <div id='navbar-bottom'>
