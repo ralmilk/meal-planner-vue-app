@@ -17,10 +17,10 @@ import { eventBus } from './main.js';
 import TheHeader from './components/shared/TheHeader';
 import TheFooter from './components/shared/TheFooter';
 import TheCalendar from './components/calendar/TheCalendar';
-import TheMealForm from './components/forms/TheMealForm';
+import TheMealForm from './components/forms/meal/TheMealForm';
 import TheSettings from './components/settings/TheSettings';
-import TheRecipeForm from './components/forms/TheRecipeForm.vue';
-import TheIngredientsForm from './components/forms/TheIngredientsForm.vue';
+import TheRecipeForm from './components/forms/recipe/TheRecipeForm.vue';
+import TheIngredientsForm from './components/forms/ingredient/TheIngredientsForm.vue';
 import TheList from './components/list/TheList';
 
 export default {
@@ -121,11 +121,6 @@ input[type=date]::-webkit-inner-spin-button {
 }
 input[type=date] {
     overflow: visible;
-}
-
-input[type=checkbox],
-input[type=radio] {
-    background-color: #eee;
 }
 
 #main {
