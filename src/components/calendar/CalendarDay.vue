@@ -4,6 +4,7 @@
          <p class='calendar-date'>{{ date }}</p>
          <meal v-for="(meal, index) in meals" 
                :key="index"
+               :dow="dow"
                :meal="meals[index]">
          </meal>
       </div>

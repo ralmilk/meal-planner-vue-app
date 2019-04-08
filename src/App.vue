@@ -26,8 +26,8 @@ import TheList from './components/list/TheList';
 export default {
     data: function() {
         return {
-            selectedComponent: 'the-list',
-            dataId: 'Recipe'
+            selectedComponent: 'the-calendar',
+            dataId: ''
         }
     },
     created() {

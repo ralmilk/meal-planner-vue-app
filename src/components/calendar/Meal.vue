@@ -11,7 +11,8 @@
 import { eventBus } from '../../main.js';
 export default {
    props: {
-      meal: Object
+      meal: Object,
+      dow: String
    },
    methods: {
       /* NAVIGATION */
@@ -19,7 +20,7 @@ export default {
          eventBus.goTo(type);
       },
       getWidth() {
-         if(this.meal.isPrepDay) 
+         if(this.meal.isPrepDay && this.dow != 'saturday') 
             return `calc(100%/7 + 5px)`
          else 
             return `calc((100%/7) * ${this.meal.servings})`;

@@ -43,6 +43,8 @@ export default {
          numDaysInMonth: 0,
          numWeeks: 0,
          monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+         nextMonth: Object,
+         prevMonth: Object,
 
          // MEAL PROPERTIES
          mealsJson: [
@@ -59,11 +61,21 @@ export default {
             {
                "Id": 7,
                "Servings": 6,
-               "StartDate": "04-28-2019",
+               "StartDate": "04-29-2019",
                "MealType": "D",
                "RestaurantFlg": "N",
                "PrepFlg": "N",
                "Title": "broccoli crown, sugar",
+               "Subcategory": "vegetarian"
+            },
+            {
+               "Id": 7,
+               "Servings": 6,
+               "StartDate": "04-13-2019",
+               "MealType": "D",
+               "RestaurantFlg": "N",
+               "PrepFlg": "N",
+               "Title": "I'm gonna wrap over a new line and need to check length",
                "Subcategory": "vegetarian"
             },
             {
@@ -88,13 +100,35 @@ export default {
             },
             {
                "Id": 8,
-               "Servings": 2,
+               "Servings": 4,
                "StartDate": "05-03-2019",
                "MealType": "B",
                "RestaurantFlg": "N",
                "PrepFlg": "N",
                "Title": "blah blah blah",
                "Subcategory": "beef"
+            },
+
+
+            {
+               "Id": 8,
+               "Servings": 7,
+               "StartDate": "04-08-19",
+               "MealType": "L",
+               "RestaurantFlg": "N",
+               "PrepFlg": "N",
+               "Title": "blah blah blah",
+               "Subcategory": "beef"
+            },
+            {
+               "Id": 8,
+               "Servings": 1,
+               "StartDate": "03-31-2019",
+               "MealType": "D",
+               "RestaurantFlg": "N",
+               "PrepFlg": "N",
+               "Title": "Restaurant",
+               "Subcategory": "restaurant"
             }
          ],
          processedMeals: [],
@@ -267,9 +301,16 @@ export default {
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join(" ");
       },
-      processPrepDate(startDate) {
+      processPrevDate(startDate, step) {
          let prepDate = new Date(startDate);
-         prepDate.setDate(prepDate.getDate() - 1);
+         prepDate.setDate(prepDate.getDate() - step);
+         return `${("0" + (prepDate.getMonth() + 1)).slice(-2)}`
+               + `-${("0" + prepDate.getDate()).slice(-2)}`
+               + `-${prepDate.getFullYear()}`;
+      },
+      processFutureDate(startDate, step) {
+         let prepDate = new Date(startDate);
+         prepDate.setDate(prepDate.getDate() + step);
          return `${("0" + (prepDate.getMonth() + 1)).slice(-2)}`
                + `-${("0" + prepDate.getDate()).slice(-2)}`
                + `-${prepDate.getFullYear()}`;
@@ -281,7 +322,7 @@ export default {
                processedMeals.push({
                   id: cur.Id,
                   servings: 1,
-                  startDate: this.processPrepDate(cur.StartDate),
+                  startDate: this.processPrevDate(cur.StartDate, 1),
                   mealType: this.processMealType(cur.MealType),
                   isRestaurant: false,
                   isPrepDay: true,
@@ -290,16 +331,47 @@ export default {
                });
             }
       
-            processedMeals.push({
-               id: cur.Id,
-               servings: cur.Servings,
-               startDate: cur.StartDate,
-               mealType: this.processMealType(cur.MealType),
-               isRestaurant: cur.RestaurantFlg === "Y",
-               isPrepDay: false,
-               title: this.processTitle(cur.Title),
-               subcategory: cur.Subcategory
-            });
+            // wrap meals around to following weeks as appropriate
+            var mealStartDOW = new Date(cur.StartDate).getDay();
+            if(mealStartDOW + cur.Servings > 7) {
+               processedMeals.push({ // meal for first week
+                  id: cur.Id,
+                  servings: 7 - mealStartDOW,
+                  startDate: cur.StartDate,
+                  mealType: this.processMealType(cur.MealType),
+                  isRestaurant: cur.RestaurantFlg === "Y",
+                  isPrepDay: false,
+                  title: this.processTitle(cur.Title),
+                  subcategory: cur.Subcategory
+               });
+
+               // only add second part if it would fall on the current month
+               let futureStartDate = this.processFutureDate(cur.StartDate, 7 - mealStartDOW);
+               if(+futureStartDate.split('-')[0] === this.month + 1) {
+                  processedMeals.push({ // day on following week
+                     id: cur.Id,
+                     servings: cur.Servings - (7 - mealStartDOW),
+                     startDate: futureStartDate,
+                     mealType: this.processMealType(cur.MealType),
+                     isRestaurant: cur.RestaurantFlg === "Y",
+                     isPrepDay: false,
+                     title: this.processTitle(cur.Title),
+                     subcategory: cur.Subcategory
+                  });
+               }
+            }
+            else {
+               processedMeals.push({
+                  id: cur.Id,
+                  servings: cur.Servings,
+                  startDate: cur.StartDate,
+                  mealType: this.processMealType(cur.MealType),
+                  isRestaurant: cur.RestaurantFlg === "Y",
+                  isPrepDay: false,
+                  title: this.processTitle(cur.Title),
+                  subcategory: cur.Subcategory
+               });
+            }
          });
 
          this.processedMeals = processedMeals;
