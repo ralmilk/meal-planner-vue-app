@@ -4,7 +4,7 @@
       
       <div id="main">
          <keep-alive include='the-calendar'>
-            <component :is='selectedComponent'></component>
+            <component :is='selectedComponent' :dataId='dataId'></component>
          </keep-alive>
       </div>
 
@@ -26,16 +26,16 @@ import TheList from './components/list/TheList';
 export default {
     data: function() {
         return {
-            selectedComponent: 'the-calendar',
-            id: 0
+            selectedComponent: 'the-list',
+            dataId: 'Recipe'
         }
     },
     created() {
         eventBus.$on('goTo', (value) => {
             console.log(value);
             if(Array.isArray(value)) { // handles opening anything with an id
-                this.selectedComponent = value[0];
-                this.id = value[1];
+                this.selectedComponent = value[0]; 
+                this.dataId = value[1];
             }
             else {
                 this.selectedComponent = value;
@@ -92,6 +92,9 @@ a:hover {
     border: 0 none;
     float: right;
     border-radius: 5px;
+}
+.btn:hover {
+   text-decoration: underline;
 }
 .btn-delete {
     background-color: rgb(255, 105, 105);

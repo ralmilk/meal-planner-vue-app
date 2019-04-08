@@ -9,9 +9,9 @@
       <div id='navbar-top'>
          <ul class='container-width'>
                <li class='navbar-link'
-                   @click="goTo(['the-list','recipes'])">Recipes</li>
+                   @click="goTo(['the-list','Recipe'])">Recipes</li>
                <li class='navbar-link'
-                   @click="goTo(['the-list','ingredients'])">Ingredients</li>
+                   @click="goTo(['the-list','Ingredient'])">Ingredients</li>
                <li class='navbar-link no-right'
                    @click="goTo('the-settings')">Settings</li>
          </ul>
