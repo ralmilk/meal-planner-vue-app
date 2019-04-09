@@ -3,9 +3,11 @@
       <the-header></the-header>
       
       <div id="main">
-         <keep-alive include='the-calendar'>
-            <component :is='selectedComponent' :dataId='dataId'></component>
-         </keep-alive>
+         <transition name='fade-fast' mode="out-in">
+            <keep-alive include='the-calendar'>
+               <component :is='selectedComponent' :dataId='dataId' :key='selectedComponent'></component>
+            </keep-alive>
+         </transition>
       </div>
 
       <the-footer></the-footer>
@@ -20,7 +22,7 @@ import TheCalendar from './components/calendar/TheCalendar';
 import TheMealForm from './components/forms/meal/TheMealForm';
 import TheSettings from './components/settings/TheSettings';
 import TheRecipeForm from './components/forms/recipe/TheRecipeForm.vue';
-import TheIngredientsForm from './components/forms/ingredient/TheIngredientsForm.vue';
+import TheIngredientForm from './components/forms/ingredient/TheIngredientsForm.vue';
 import TheList from './components/list/TheList';
 
 export default {
@@ -49,7 +51,7 @@ export default {
        'the-settings': TheSettings,
        'the-meal-form' : TheMealForm,
        'the-recipe-form' : TheRecipeForm,
-       'the-ingredient-form' : TheIngredientsForm,
+       'the-ingredient-form' : TheIngredientForm,
        'the-list' : TheList
     }
 }
@@ -152,6 +154,12 @@ input[type=date] {
     transition: opacity .5s
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+    opacity: 0
+}
+.fade-fast-enter-active, .fade-fast-leave-active {
+    transition: opacity .1s
+}
+.fade-fast-enter, .fade-fast-leave-to /* .fade-leave-active in <2.1.8 */ {
     opacity: 0
 }
 </style>

@@ -76,7 +76,7 @@ export default {
                "RestaurantFlg": "N",
                "PrepFlg": "N",
                "Title": "I'm gonna wrap over a new line and need to check length",
-               "Subcategory": "vegetarian"
+               "Subcategory": "salad"
             },
             {
                "Id": 3,
@@ -86,7 +86,7 @@ export default {
                "RestaurantFlg": "N",
                "PrepFlg": "N",
                "Title": "Test meal for processing",
-               "Subcategory": "pork"
+               "Subcategory": "soup"
             },
             {
                "Id": 5,
@@ -108,15 +108,13 @@ export default {
                "Title": "blah blah blah",
                "Subcategory": "beef"
             },
-
-
             {
                "Id": 8,
                "Servings": 7,
                "StartDate": "04-08-19",
                "MealType": "L",
                "RestaurantFlg": "N",
-               "PrepFlg": "N",
+               "PrepFlg": "Y",
                "Title": "blah blah blah",
                "Subcategory": "beef"
             },
@@ -129,26 +127,33 @@ export default {
                "PrepFlg": "N",
                "Title": "Restaurant",
                "Subcategory": "restaurant"
+            },
+            {
+               "Id": 8,
+               "Servings": 1,
+               "StartDate": "03-31-2019",
+               "MealType": "B",
+               "RestaurantFlg": "N",
+               "PrepFlg": "Y",
+               "Title": "Restaurant",
+               "Subcategory": "vegetarian"
             }
          ],
          processedMeals: [],
          meals: []
       }
-   },   
-   watch: {
-      month() {
-         this.setUp(false);
-      }
-   },
+   }, 
    created(){
       this.setUp(true);
       eventBus.$on('arrowClicked', (direction) => {
          this.updateMonth(direction);
+         this.setUp(false);
       });
    },
    methods: {
       /* SET UP*/
       setUp(initial){
+         console.log('running setUp', initial);
          this.setDataValues(initial);
          this.getCalendarArray();
          this.processMeals();
@@ -388,25 +393,35 @@ export default {
             let month = meal.startDate.split("-")[0];
             let date = meal.startDate.split("-")[1];
             let matches = [];
-            for(let week = 0; week < this.numWeeks; week++) {
-               let dateIndex = this.calendar[week].findIndex(day => day == date);
-               if(dateIndex >= 0) {
-                  matches.push([week, dateIndex]);
-               }        
-            }
 
-            if(matches.length > 1) {
-               if ((date <= 7 && month <= (this.month + 1)/* && month >= (calendar.month - 1)*/)
-                  || (date > 7 && month != (this.month + 1))) {
-                  matches.pop(); 
-               } else {
-                  matches.shift();
+            // make sure prepdays for previous months don't get printed on the current month accidentally
+            if(meal.isPrepDay 
+               && +month === this.month 
+               && this.prevMonth.numDaysInMonth - this.startDayOfWeek >= +date) 
+            {
+               return; 
+            } 
+            else {
+               for(let week = 0; week < this.numWeeks; week++) {
+                  let dateIndex = this.calendar[week].findIndex(day => day == date);
+                  if(dateIndex >= 0) {
+                     matches.push([week, dateIndex]);
+                  }        
                }
-            }
 
-            if(matches.length != 0) {
-               mealMatrix[matches[0][0]][matches[0][1]].push(meal);
-            }
+               if(matches.length > 1) {
+                  if ((date <= 7 && month <= (this.month + 1)/* && month >= (calendar.month - 1)*/)
+                     || (date > 7 && month != (this.month + 1))) {
+                     matches.pop(); 
+                  } else {
+                     matches.shift();
+                  }
+               }
+
+               if(matches.length != 0) {
+                  mealMatrix[matches[0][0]][matches[0][1]].push(meal);
+               }
+            }      
          });
          this.meals = mealMatrix;
       }
