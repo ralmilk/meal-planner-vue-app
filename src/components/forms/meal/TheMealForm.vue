@@ -20,7 +20,6 @@
          <a class='btn btn-delete' >Delete Meal</a>
          <a class='btn' @click="goTo('the-calendar')">Cancel</a>
       </div>
-
       
       <div class='home-form' slot='form-body' v-if='!showRestaurantForm'>
          <div id='meal-form-details'>
@@ -66,8 +65,11 @@
 
       <div class='restaurant-form' slot='form-body' v-else>
          <div id='meal-form-details'>
-            <label for='startDate'>Date *</label>
-            <input autofocus type='date' name='startDate' v-model='startDate'><br>             
+            <h2>Details</h2>
+            <label for='startDate'>Start Date *</label>
+            <input autofocus type='date' name='startDate' v-model='startDate'><br>  
+            <label for='servings'>Number of Servings *</label>
+            <input type='number' name='servings' v-model='servings'><br>           
             <div class='radio-btn'>
                <h3>Time of Day</h3>
                <custom-radio-button v-for='(time, index) in mealTimeOptions'
@@ -80,7 +82,6 @@
             </div>
          </div>
       </div>
-
    </the-form-template>
 </template>
 
@@ -137,10 +138,12 @@ export default {
             if(this.category === 2 || this.category === 4) {
                this.selections.sides.push(this.searchString);
                this.selectionIds.sides.push(this.searchId);
+               this.searchString = '';
             } else if (this.category === 1) {
                if (this.selectionIds.entree === 0) {
                   this.selections.entree = this.searchString;
                   this.selectionIds.entree = this.searchId;
+                  this.searchString = '';
                } else {
                   this.warning = 'Only one entree can be selected.';
                }
@@ -148,6 +151,7 @@ export default {
                if (this.selectionIds.dessert === 0) {
                   this.selections.dessert = this.searchString;
                   this.selectionIds.dessert = this.searchId;
+                  this.searchString = '';
                } else {
                   this.warning = 'Only one dessert can be selected.';
                }
@@ -172,6 +176,7 @@ export default {
                this.selections.entree = '';
                this.selectionIds.entree = 0;
             } 
+            this.warning = '';
          }
       });
       eventBus.$on('radioValueChanged', (name, value) => {

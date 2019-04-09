@@ -88,7 +88,7 @@ export default {
 h2 {
     margin-bottom: 10px;
 }
-p {
+#list-container p {
     padding-top:5px;
 }
 .deleted {

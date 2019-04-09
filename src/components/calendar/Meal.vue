@@ -96,6 +96,14 @@ meal width = calc(100%/7) * numberOfDays
     background-color: #9DA8D3;
     color: #303C6C;
 }
+.salad {
+    background-color: #729978;
+    color: #fff;
+}
+.soup {
+    background-color: #FFA1A1;
+    color: #303C6C;
+}
 .restaurant {
     background-color: #303C6C;
     color: #fff;
