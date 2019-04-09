@@ -1,5 +1,5 @@
 <template>
-   <the-form-template> 
+   <the-form-template :type="'meal'"> 
       <div id='topbar' slot='topbar-content'>
          <div class='radio-btn'>
             <custom-radio-button :n="'mealType'" 
@@ -25,9 +25,9 @@
          <div id='meal-form-details'>
             <h2>Details</h2>
             <label for='startDate'>Start Date *</label>
-            <input autofocus type='date' name='startDate' v-model='startDate'><br>
+            <input required utofocus type='date' name='startDate' v-model='startDate'><br>
             <label for='servings'>Number of Servings *</label>
-            <input type='number' name='servings' v-model='servings'><br>
+            <input required type='number' name='servings' v-model='servings'><br>
             <custom-checkbox :n="'prepFlag'" :text="'Prep on day before?'" :isChecked='prepFlag'></custom-checkbox>
                   
             <div class='radio-btn'>
@@ -45,11 +45,10 @@
          <div id='meal-form-search'>
             <h2>Search Components</h2>
             <label for='category'>Category *</label>
-            <select name='category' v-model='category'>
-               <option v-for='(category, index) in categories' 
+            <select required name='category' v-model='category'>
+               <option v-for='(cat, index) in categories' 
                        :key='index+1'
-                       :value='index+1'
-                       :selected='1'>{{ category }}
+                       :value='index+1'>{{ cat }}
                </option>
             </select>
             <span class='warning' v-if='warning.length > 0'>{{ this.warning }}</span>
@@ -207,7 +206,11 @@ export default {
 </script>
 
 <style>
-.form-container { 
+.meal-form-container {
+   background-color: rgba(255, 255, 255, 0.5);
+   padding: 20px;
+   border-radius: 10px;
+   margin-top: 110px;
    height: 380px;
 }
 #meal-form-details{

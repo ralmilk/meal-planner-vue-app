@@ -41,6 +41,17 @@ export default {
 </script>
 
 <style>
+h2 {
+    margin-bottom: 10px;
+}
+#list-container p {
+    padding-top:5px;
+}
+.deleted {
+    font-style: italic !important;
+    text-decoration: line-through;
+}
+
 /*************** LIST *****************/
 #list-container {
     width: 100%;
@@ -112,18 +123,5 @@ export default {
 }
 .even {
     background-color: rgba(55, 142, 153, 0.4);
-}
-#list-footer{
-    background-color: #303C6C;
-    color: #fff;
-    height: 20px;
-}
-#list-footer p {
-    float: right;
-    margin-right: 115px;
-}
-.total-cost {
-    font-weight: bold;
-    margin-right: 15px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-   <div class='form-container'>
+   <div :class='`${type}-form-container`'>
       <form>
          <slot name='topbar-content'></slot>
          <slot name='form-body'></slot>
@@ -8,15 +8,12 @@
 </template>
 
 <script>
+export default {
+   props: ['type']
+}
 </script>
 
 <style scoped>
-.form-container {
-   background-color: rgba(255, 255, 255, 0.5);
-   padding: 20px;
-   border-radius: 10px;
-   margin-top: 110px;
-}
 label {
     font-weight: bold;
 }
@@ -69,5 +66,11 @@ select {
     border-radius: 5px;
     background-color: #303C6C;
     color: #fff;
+}
+.warning {
+   color: #fff;
+   background-color: #F36666;
+   padding: 5px 10px;
+   border-radius: 5px;
 }
 </style>

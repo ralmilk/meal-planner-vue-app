@@ -85,14 +85,4 @@ export default {
    border-radius: 10px;
    margin-top: 110px;
 }
-h2 {
-    margin-bottom: 10px;
-}
-#list-container p {
-    padding-top:5px;
-}
-.deleted {
-    font-style: italic !important;
-    text-decoration: line-through;
-}
 </style>

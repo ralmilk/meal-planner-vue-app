@@ -33,6 +33,7 @@ import TheCalendarControls from './TheCalendarControls';
 import CalendarWeek from './CalendarWeek';
 
 export default {
+   props: ['dataId'],
    data: function() {
       return {
          // CALENDAR PROPERTIES

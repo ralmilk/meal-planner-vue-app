@@ -22,7 +22,7 @@ import TheCalendar from './components/calendar/TheCalendar';
 import TheMealForm from './components/forms/meal/TheMealForm';
 import TheSettings from './components/settings/TheSettings';
 import TheRecipeForm from './components/forms/recipe/TheRecipeForm.vue';
-import TheIngredientForm from './components/forms/ingredient/TheIngredientsForm.vue';
+import TheIngredientForm from './components/forms/ingredient/TheIngredientForm.vue';
 import TheList from './components/list/TheList';
 
 export default {
@@ -41,6 +41,7 @@ export default {
             }
             else {
                 this.selectedComponent = value;
+                this.dataId = '';
             }
         });
     },
