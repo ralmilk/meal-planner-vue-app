@@ -3,8 +3,10 @@
       <div id='topbar' slot='topbar-content'>
          <span class='warning' v-if='this.warning !== ""'>{{ warning }}</span>
          <input class='btn' @click.prevent='saveRecipe()' type='submit' value='Save'>
-         <a v-if='dataId !== ""' class='btn btn-delete' @click='deleteRecipe()'>Delete Recipe</a>
-         <a class='btn' @click="goTo('the-list','Recipe')">Cancel</a>
+         <a v-if='id !== undefined' class='btn btn-delete' @click='deleteRecipe()'>Delete Recipe</a>
+         <router-link :to="{ name: 'list', params: { type: 'Recipe' } }" 
+                      class='btn'><a>Cancel</a>
+         </router-link>   
       </div>
 
       <div slot='form-body' >
@@ -78,12 +80,11 @@
 </template>
 
 <script>
-import { eventBus } from '../../../main.js';
 import TheFormTemplate from '../TheFormTemplate';
 import TheRecipeIngredientList from '../recipe/TheRecipeIngredientList';
 
 export default {
-   props: ['dataId'],
+   props: ['id'],
    data: function() {
       return {
          // display data
@@ -120,9 +121,6 @@ export default {
       };
    },
    methods: {
-      goTo(type) {
-         eventBus.goTo(type);
-      },
       saveRecipe() {
          // TODO: verify required fields
          if(true) {

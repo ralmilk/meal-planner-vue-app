@@ -1,24 +1,21 @@
 <template>
-   <div @click="goTo(['the-meal-form', meal.id])"
-        v-if="meal" class='meal pointer' 
-        :class="[meal.mealType, checkPrepDayStatus()]" 
-        :style="{ width: getWidth() }">
-      <p class='meal-name' :class="meal.subcategory">{{ meal.title }}</p>
-   </div>
+   <router-link :to="{ name: 'meal', params: { id: meal.id } }">
+      <div
+         v-if="meal" class='meal pointer' 
+         :class="[meal.mealType, checkPrepDayStatus()]" 
+         :style="{ width: getWidth() }">
+         <p class='meal-name' :class="meal.subcategory">{{ meal.title }}</p>
+      </div>
+   </router-link>
 </template>
 
 <script>
-import { eventBus } from '../../main.js';
 export default {
    props: {
       meal: Object,
       dow: String
    },
    methods: {
-      /* NAVIGATION */
-      goTo(type) {
-         eventBus.goTo(type);
-      },
       getWidth() {
          if(this.meal.isPrepDay && this.dow != 'saturday') 
             return `calc(100%/7 + 5px)`

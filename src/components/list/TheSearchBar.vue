@@ -2,7 +2,7 @@
    <div id='search-topbar'>    
       <label for='search'>Search: </label>
       <input type='text' name='search'>
-      <button class='btn' @click="goTo(`the-${type.toLowerCase()}-form`, 0)">Add New {{ type }}</button>
+      <router-link :to="{ name: type.toLowerCase() }" class='btn'>Add New {{ type }}</router-link>
       <toggle-switch :rightDescr="showDeleted ? 'Hide Deleted' : 'Show Deleted'"></toggle-switch>
    </div>
 </template>
@@ -16,11 +16,6 @@ export default {
    data() {
       return {
          showDeleted: false
-      }
-   },
-   methods: {
-      goTo(type) {
-         eventBus.goTo(type);
       }
    },
    created() {

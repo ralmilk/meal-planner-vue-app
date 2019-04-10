@@ -9,9 +9,7 @@
          class="fas fa-arrow-right fa-lg arrow"
          @click="arrowClicked('next')">
       </i>
-      <button class='btn' 
-               @click="goTo('the-meal-form', 0)">Add New Meal
-      </button>
+      <router-link :to="{ name: 'meal' }" tag='button' class='btn'>Add New Meal</router-link>
    </div>
 </template>
 
@@ -22,9 +20,6 @@ export default {
     methods: {
         arrowClicked(type) {
             eventBus.$emit('arrowClicked', type);
-        },
-        goTo(type) {
-            eventBus.goTo(type);
         }
     }
 }

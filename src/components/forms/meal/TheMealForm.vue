@@ -17,8 +17,10 @@
          </div>
 
          <input class='btn' @click.prevent='' type='submit' value='Save'>
-         <a v-if='dataId !== ""' class='btn btn-delete' >Delete Meal</a>
-         <a class='btn' @click="goTo('the-calendar')">Cancel</a>
+         <a v-if='id !== undefined' class='btn btn-delete' >Delete Meal</a>
+         <router-link :to="{ name: 'calendar' }" 
+                      class='btn'><a>Cancel</a>
+         </router-link> 
       </div>
       
       <div class='home-form' slot='form-body' v-if='!showRestaurantForm'>
@@ -92,7 +94,7 @@ import CustomRadioButton from '../CustomRadioButton.vue';
 import CustomCheckbox from '../CustomCheckbox.vue';
 
 export default {
-   props: ['dataId'],
+   props: ['id'],
    data: function() {
       return {
          // form display properties/helpers
@@ -130,9 +132,6 @@ export default {
       }
    },
    methods: {
-      goTo(type) {
-         eventBus.goTo(type);
-      },
       selectionAdded(){
          if(this.searchString.length) {
             if(this.category === 2 || this.category === 4) {

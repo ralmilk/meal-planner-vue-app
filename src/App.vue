@@ -4,9 +4,7 @@
       <div id="main">
          <transition name='fade-fast' mode="out-in">
             <keep-alive include='the-calendar'>
-               <component :is='selectedComponent' 
-                          :dataId='dataId'
-                          :key='selectedComponent'></component>
+               <router-view></router-view>
             </keep-alive>
          </transition>
       </div>
@@ -29,25 +27,6 @@ import TheList from './components/list/TheList';
 import Modal from './components/shared/Modal';
 
 export default {
-   data: function() {
-      return {
-         selectedComponent: 'the-calendar',
-         dataId: ''
-      }
-   },
-   created() {
-      eventBus.$on('goTo', (value) => {
-         console.log(value);
-         if(Array.isArray(value)) { // handles opening anything with an id
-               this.selectedComponent = value[0]; 
-               this.dataId = value[1];
-         }
-         else {
-               this.selectedComponent = value;
-               this.dataId = '';
-         }
-      });
-   },
    components: {
       'the-header': TheHeader,
       'the-footer': TheFooter,

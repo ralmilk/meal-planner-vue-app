@@ -1,19 +1,29 @@
 <template>
    <header>
       <div class='container-width'>
-         <img src='../../assets/logo.png' 
+         <router-link :to="{ name: 'calendar' }">
+            <img src='../../assets/logo.png' 
               id='header-logo' 
-              alt='Meal Planner Logo'
-              @click="goTo('the-calendar')">
+              alt='Meal Planner Logo'>
+         </router-link>        
       </div>
       <div id='navbar-top'>
          <ul class='container-width'>
-               <li class='navbar-link'
-                   @click="goTo(['the-list','Recipe'])">Recipes</li>
-               <li class='navbar-link'
-                   @click="goTo(['the-list','Ingredient'])">Ingredients</li>
-               <li class='navbar-link no-right'
-                   @click="goTo('the-settings')">Settings</li>
+            <router-link :to="{name: 'list', params: { type: 'Recipe'}}" 
+                         tag='li' 
+                         class="navbar-link" 
+                         exact>Recipes
+            </router-link>
+            <router-link :to="{name: 'list', params: { type: 'Ingredient'}}" 
+                         tag='li' 
+                         class="navbar-link" 
+                         exact>Ingredients
+            </router-link>
+            <router-link :to="{name: 'settings'}" 
+                         tag='li' 
+                         class="navbar-link no-right" 
+                         exact>Settings
+            </router-link>
          </ul>
       </div>
       <div id='navbar-bottom'>
@@ -23,14 +33,6 @@
 </template>
 
 <script>
-import { eventBus } from '../../main.js';
-export default {
-    methods: {
-        goTo(type) {
-            eventBus.goTo(type);
-        }
-    }
-}
 </script>
 
 <style>

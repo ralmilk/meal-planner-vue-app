@@ -5,7 +5,10 @@
          <span class='item-name'>{{ item.name }}</span>
 
          <span class='edit-delete' v-if='!item.isDeleted'>
-               <i class="fas fa-pencil-alt" @click='editItem()'></i>
+               <router-link :to='{ name: type.toLowerCase(), params: { id: item.id } }' 
+                           tag='i' 
+                           class='fas fa-pencil-alt'>
+               </router-link>
                <i class="far fa-times-circle" @click='deleteItem()'></i>
          </span>
          <span class='edit-delete' v-else>
@@ -64,9 +67,6 @@ export default{
          alert(`readd me! ${this.item.id}`);
          // TODO: readd item to the database (change active flag)
       },
-      editItem() {
-         eventBus.goTo([`the-${this.type.toLowerCase()}-form`, this.item.id]);
-      }, 
       deleteItem() {
          alert(`delete me! ${this.item.id}`);
          // TODO: set item activeflag to 'N' in db
@@ -74,3 +74,6 @@ export default{
    }
 }
 </script>
+
+<style>
+</style>

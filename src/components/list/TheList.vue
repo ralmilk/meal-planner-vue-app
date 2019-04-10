@@ -1,9 +1,9 @@
 <template>
    <div>
       <div class="search-container">
-         <the-search-bar :type='dataId'></the-search-bar>
+         <the-search-bar :type='type'></the-search-bar>
       </div>
-      <the-list-table :type='dataId' 
+      <the-list-table :type='type' 
                       :items='items'>
       </the-list-table>
    </div>
@@ -14,7 +14,7 @@ import TheListTable from './TheListTable';
 import TheSearchBar from './TheSearchBar';
 
 export default {
-   props: ['dataId'],
+   props: ['type'],
    data() {
       return {
          items: [

@@ -3,13 +3,15 @@
       <div id='topbar' slot='topbar-content'>
          <span class='warning' v-if='this.warning !== ""'>{{ warning }}</span>
          <input class='btn' @click.prevent='saveIngredient()' type='submit' value='Save'>
-         <a v-if='dataId !== ""' class='btn btn-delete' @click='deleteIngredient()'>Delete Ingredient</a>
-         <a class='btn' @click="goTo('the-list','Ingredient')">Cancel</a>
+         <a v-if='id !== undefined' class='btn btn-delete' @click='deleteIngredient()'>Delete Ingredient</a>
+         <router-link :to="{ name: 'list', params: { type: 'Ingredient' } }" 
+                      class='btn'><a>Cancel</a>
+         </router-link>   
       </div>
 
       <div slot='form-body' >
          <div id='ingredient-details'>
-            <h2>{{ dataId === "" ? 'New' : 'Edit' }} Ingredient</h2>
+            <h2>{{ id === "" ? 'New' : 'Edit' }} Ingredient</h2>
             <label class='min-width' for='description'>Description *</label>
             <input autofocus type='text' name='description' v-model='description'><br>
 
@@ -32,11 +34,10 @@
 </template>
 
 <script>
-import { eventBus } from '../../../main.js';
 import TheFormTemplate from '../TheFormTemplate';
 
 export default {
-   props: ['dataId'],
+   props: ['id'],
    data: function() {
       return {
          // display data
@@ -51,9 +52,6 @@ export default {
       };
    },
    methods: {
-      goTo(type) {
-         eventBus.goTo(type);
-      },
       saveIngredient() {
          // TODO: verify required fields
          if(this.description === '' || this.quantity <= 0 || this.cost <= 0) {
