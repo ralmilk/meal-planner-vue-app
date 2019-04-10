@@ -15,13 +15,13 @@
             <li>Saturday</li>
          </ul>
       </div>
-      <div id='calendar'>
+      <div id='calendar' v-if='mealMatrix.length > 0'> <!-- TODO: fix hacky way of loading the calendar with vuex or vue-router later -->
          <calendar-week 
             v-for='(week, index) in numWeeks' 
             :key="index"
             :week='calendar[index]'
             :weekNum='index'
-            :meals='meals[index]'>
+            :meals='mealMatrix[index]'>
          </calendar-week>
       </div> 
    </div>
@@ -48,117 +48,42 @@ export default {
          prevMonth: Object,
 
          // MEAL PROPERTIES
-         mealsJson: [
-            {
-               "Id": 2,
-               "Servings": 4,
-               "StartDate": "04-01-2019",
-               "MealType": "L",
-               "RestaurantFlg": "N",
-               "PrepFlg": "Y",
-               "Title": "Chicken, jasmine rice, broccoli crown",
-               "Subcategory": "chicken"
-            },
-            {
-               "Id": 7,
-               "Servings": 6,
-               "StartDate": "04-29-2019",
-               "MealType": "D",
-               "RestaurantFlg": "N",
-               "PrepFlg": "N",
-               "Title": "broccoli crown, sugar",
-               "Subcategory": "vegetarian"
-            },
-            {
-               "Id": 7,
-               "Servings": 6,
-               "StartDate": "04-13-2019",
-               "MealType": "D",
-               "RestaurantFlg": "N",
-               "PrepFlg": "N",
-               "Title": "I'm gonna wrap over a new line and need to check length",
-               "Subcategory": "salad"
-            },
-            {
-               "Id": 3,
-               "Servings": 4,
-               "StartDate": "04-28-2019",
-               "MealType": "L",
-               "RestaurantFlg": "N",
-               "PrepFlg": "N",
-               "Title": "Test meal for processing",
-               "Subcategory": "soup"
-            },
-            {
-               "Id": 5,
-               "Servings": 6,
-               "StartDate": "04-07-2019",
-               "MealType": "B",
-               "RestaurantFlg": "N",
-               "PrepFlg": "N",
-               "Title": "blah blah blah",
-               "Subcategory": "pork"
-            },
-            {
-               "Id": 8,
-               "Servings": 4,
-               "StartDate": "05-03-2019",
-               "MealType": "B",
-               "RestaurantFlg": "N",
-               "PrepFlg": "N",
-               "Title": "blah blah blah",
-               "Subcategory": "beef"
-            },
-            {
-               "Id": 8,
-               "Servings": 7,
-               "StartDate": "04-08-19",
-               "MealType": "L",
-               "RestaurantFlg": "N",
-               "PrepFlg": "Y",
-               "Title": "blah blah blah",
-               "Subcategory": "beef"
-            },
-            {
-               "Id": 8,
-               "Servings": 1,
-               "StartDate": "03-31-2019",
-               "MealType": "D",
-               "RestaurantFlg": "N",
-               "PrepFlg": "N",
-               "Title": "Restaurant",
-               "Subcategory": "restaurant"
-            },
-            {
-               "Id": 8,
-               "Servings": 1,
-               "StartDate": "03-31-2019",
-               "MealType": "B",
-               "RestaurantFlg": "N",
-               "PrepFlg": "Y",
-               "Title": "Restaurant",
-               "Subcategory": "vegetarian"
-            }
-         ],
+         mealsJson: [],
          processedMeals: [],
-         meals: []
+         mealMatrix: []
       }
-   }, 
+   },
    created(){
       this.setUp(true);
       eventBus.$on('arrowClicked', (direction) => {
          this.updateMonth(direction);
          this.setUp(false);
       });
-   },
+   }, 
    methods: {
       /* SET UP*/
       setUp(initial){
-         console.log('running setUp', initial);
          this.setDataValues(initial);
          this.getCalendarArray();
-         this.processMeals();
-         this.buildMealsMatrix();
+         this.getMealsByDateRange();
+      },
+
+      /* DATABASE METHODS */
+      getMealsByDateRange(){
+         let dates = this.getMealQueryDates();
+         this.$http.get(`meal/calendar/${dates.startDate}/${dates.endDate}`)
+            .then(response => {
+               return response.json();
+            })
+            .then(data => {
+               data.forEach(cur => this.mealsJson.push(cur));    
+            }, error => {
+               this.mealsJson = [];
+            })
+            .then(() => {
+               this.processMeals();
+               this.buildMealsMatrix();
+            });
       },
 
       /* CALENDAR METHODS */      
@@ -293,7 +218,7 @@ export default {
             endDate: `${endDate.month}-${lastDay}-${endDate.year}`
          }
       },
-      processMealType(mealType) {
+      processMealTime(mealType) {
          if(mealType === "D") 
             return "dinner";
          else if(mealType === "L") 
@@ -329,7 +254,7 @@ export default {
                   id: cur.Id,
                   servings: 1,
                   startDate: this.processPrevDate(cur.StartDate, 1),
-                  mealType: this.processMealType(cur.MealType),
+                  mealType: this.processMealTime(cur.MealTime),
                   isRestaurant: false,
                   isPrepDay: true,
                   title: "Prep Day",
@@ -344,8 +269,8 @@ export default {
                   id: cur.Id,
                   servings: 7 - mealStartDOW,
                   startDate: cur.StartDate,
-                  mealType: this.processMealType(cur.MealType),
-                  isRestaurant: cur.RestaurantFlg === "Y",
+                  mealType: this.processMealTime(cur.MealTime),
+                  isRestaurant: cur.MealType === "Y",
                   isPrepDay: false,
                   title: this.processTitle(cur.Title),
                   subcategory: cur.Subcategory
@@ -358,8 +283,8 @@ export default {
                      id: cur.Id,
                      servings: cur.Servings - (7 - mealStartDOW),
                      startDate: futureStartDate,
-                     mealType: this.processMealType(cur.MealType),
-                     isRestaurant: cur.RestaurantFlg === "Y",
+                     mealType: this.processMealTime(cur.MealTime),
+                     isRestaurant: cur.MealType === "Y",
                      isPrepDay: false,
                      title: this.processTitle(cur.Title),
                      subcategory: cur.Subcategory
@@ -371,8 +296,8 @@ export default {
                   id: cur.Id,
                   servings: cur.Servings,
                   startDate: cur.StartDate,
-                  mealType: this.processMealType(cur.MealType),
-                  isRestaurant: cur.RestaurantFlg === "Y",
+                  mealType: this.processMealTime(cur.MealTime),
+                  isRestaurant: cur.MealType === "Y",
                   isPrepDay: false,
                   title: this.processTitle(cur.Title),
                   subcategory: cur.Subcategory
@@ -424,7 +349,7 @@ export default {
                }
             }      
          });
-         this.meals = mealMatrix;
+         this.mealMatrix = mealMatrix;
       }
    },
    components: {

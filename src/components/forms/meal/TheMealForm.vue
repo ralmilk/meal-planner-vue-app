@@ -17,7 +17,7 @@
          </div>
 
          <input class='btn' @click.prevent='' type='submit' value='Save'>
-         <a class='btn btn-delete' >Delete Meal</a>
+         <a v-if='dataId !== ""' class='btn btn-delete' >Delete Meal</a>
          <a class='btn' @click="goTo('the-calendar')">Cancel</a>
       </div>
       
@@ -92,6 +92,7 @@ import CustomRadioButton from '../CustomRadioButton.vue';
 import CustomCheckbox from '../CustomCheckbox.vue';
 
 export default {
+   props: ['dataId'],
    data: function() {
       return {
          // form display properties/helpers
@@ -156,6 +157,30 @@ export default {
                }
             }
          }
+      },
+      submit() {
+         let meal = {
+            Servings: this.servings,
+            StartDate: this.startDate,
+            PrepFlag: this.prepFlag ? 'Y' : 'N',
+            MealType: this.mealType,
+            MealTime: this.mealTime,
+            MealComponents: []
+         };
+
+         selectionIds.forEach((cur, key) => {
+            let obj = {
+               RecipeId: 0,
+               IngredientId: 0,
+               CategoryId: key === 'entree' ? 1 : key === 'sides'
+            };
+
+            meal.MealComponents.push(obj);
+         }); 
+         mealComponents.push({
+            RecipeId: this.selectionIds.entree !== 0 ? this.selectionIds.entree : null,
+            IngredientId: this.selectionIds.entree !== 0 ? this.selectionIds.entree : null,
+         });
       }
    },
    created() {

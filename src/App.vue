@@ -1,15 +1,17 @@
 <template>
    <div id="app">
       <the-header></the-header>
-      
       <div id="main">
          <transition name='fade-fast' mode="out-in">
             <keep-alive include='the-calendar'>
-               <component :is='selectedComponent' :dataId='dataId' :key='selectedComponent'></component>
+               <component :is='selectedComponent' 
+                          :dataId='dataId'
+                          :key='selectedComponent'></component>
             </keep-alive>
          </transition>
       </div>
 
+      <!-- <modal></modal> -->
       <the-footer></the-footer>
    </div>
 </template>
@@ -24,60 +26,62 @@ import TheSettings from './components/settings/TheSettings';
 import TheRecipeForm from './components/forms/recipe/TheRecipeForm.vue';
 import TheIngredientForm from './components/forms/ingredient/TheIngredientForm.vue';
 import TheList from './components/list/TheList';
+import Modal from './components/shared/Modal';
 
 export default {
-    data: function() {
-        return {
-            selectedComponent: 'the-calendar',
-            dataId: ''
-        }
-    },
-    created() {
-        eventBus.$on('goTo', (value) => {
-            console.log(value);
-            if(Array.isArray(value)) { // handles opening anything with an id
-                this.selectedComponent = value[0]; 
-                this.dataId = value[1];
-            }
-            else {
-                this.selectedComponent = value;
-                this.dataId = '';
-            }
-        });
-    },
-    components: {
-       'the-header': TheHeader,
-       'the-footer': TheFooter,
-       'the-calendar': TheCalendar,
-       'the-settings': TheSettings,
-       'the-meal-form' : TheMealForm,
-       'the-recipe-form' : TheRecipeForm,
-       'the-ingredient-form' : TheIngredientForm,
-       'the-list' : TheList
-    }
+   data: function() {
+      return {
+         selectedComponent: 'the-calendar',
+         dataId: ''
+      }
+   },
+   created() {
+      eventBus.$on('goTo', (value) => {
+         console.log(value);
+         if(Array.isArray(value)) { // handles opening anything with an id
+               this.selectedComponent = value[0]; 
+               this.dataId = value[1];
+         }
+         else {
+               this.selectedComponent = value;
+               this.dataId = '';
+         }
+      });
+   },
+   components: {
+      'the-header': TheHeader,
+      'the-footer': TheFooter,
+      'the-calendar': TheCalendar,
+      'the-settings': TheSettings,
+      'the-meal-form' : TheMealForm,
+      'the-recipe-form' : TheRecipeForm,
+      'the-ingredient-form' : TheIngredientForm,
+      'the-list' : TheList,
+      'modal' : Modal
+   }
 }
 </script>
 
 <style>
 * {
-    margin: 0;
-    padding: 0; 
+   margin: 0;
+   padding: 0; 
 }
 html {    
-    background-image: linear-gradient(to bottom, #B4DFE5, #378D99);
-    background-size: cover;
-    background-repeat: no-repeat;
-    height: 100%;
-    min-width: 1250px;
-    min-height: 1000px;
+   background-image: linear-gradient(to bottom, #B4DFE5, #378D99);
+   background-size: cover;
+   background-repeat: no-repeat;
+   height: 100%;
+   min-width: 1250px;
+   min-height: 1000px;
 }
 body {
-    font-family: 'Ink Free Regular', sans-serif;
-    font-weight: 400;
-    color: #303C6C;
+   font-family: 'Ink Free Regular', sans-serif;
+   font-weight: 400;
+   color: #303C6C;
 }
 h1,h2,h3,h4,h5,h6{
-    text-decoration: underline;
+   text-decoration: underline;
 }
 a {
     text-decoration: none;
@@ -100,7 +104,7 @@ a:hover {
    text-decoration: underline;
 }
 .btn-delete {
-    background-color: rgb(255, 105, 105);
+    background-color: #F36666;
     color: #fff;
     padding: 4px 10px;
     margin-right: 25px;
