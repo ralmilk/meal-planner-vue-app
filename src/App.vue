@@ -16,6 +16,7 @@
 
 <script>
 import { eventBus } from './main.js';
+import { mapActions } from 'vuex';
 import TheHeader from './components/shared/TheHeader';
 import TheFooter from './components/shared/TheFooter';
 import TheCalendar from './components/calendar/TheCalendar';
@@ -27,6 +28,26 @@ import TheList from './components/list/TheList';
 import Modal from './components/shared/Modal';
 
 export default {
+   methods: {
+      ...mapActions({
+         initCategories: 'categories/initialize',
+         initGenres: 'genres/initialize',
+         initDifficulties: 'difficulties/initialize',
+         initSubcategories: 'subcategories/initialize',
+         initUnits: 'units/initialize',
+      }),
+      initializeStore() {
+         // make API calls to populate the modules in store 
+         this.initCategories();
+         this.initGenres();
+         this.initDifficulties();
+         this.initSubcategories();
+         this.initUnits();
+      }
+   },
+   created() {
+      this.initializeStore();
+   },
    components: {
       'the-header': TheHeader,
       'the-footer': TheFooter,

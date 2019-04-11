@@ -29,6 +29,7 @@
 
 <script>
 import { eventBus } from '../../main.js';
+import { mapActions, mapGetters } from 'vuex';
 import TheCalendarControls from './TheCalendarControls';
 import CalendarWeek from './CalendarWeek';
 
@@ -47,9 +48,19 @@ export default {
          prevMonth: Object,
 
          // MEAL PROPERTIES
-         mealsJson: [],
          processedMeals: [],
          mealMatrix: []
+      }
+   },
+   computed: {
+      ...mapGetters({
+         mealsJson: 'meals/getMeals'
+      })
+   },
+   watch: {
+      mealsJson() {
+         this.processMeals();
+         this.buildMealsMatrix();
       }
    },
    created(){
@@ -60,29 +71,15 @@ export default {
       });
    }, 
    methods: {
+      ...mapActions({
+         getMealsByDateRange: 'meals/getMealsByDateRange'
+      }),
+
       /* SET UP*/
       setUp(initial){
          this.setDataValues(initial);
          this.getCalendarArray();
-         this.getMealsByDateRange();
-      },
-
-      /* DATABASE METHODS */
-      getMealsByDateRange(){
-         let dates = this.getMealQueryDates();
-         this.$http.get(`meal/calendar/${dates.startDate}/${dates.endDate}`)
-            .then(response => {
-               return response.json();
-            })
-            .then(data => {
-               data.forEach(cur => this.mealsJson.push(cur));    
-            }, error => {
-               this.mealsJson = [];
-            })
-            .then(() => {
-               this.processMeals();
-               this.buildMealsMatrix();
-            });
+         this.getMealsByDateRange(this.getMealQueryDates());
       },
 
       /* CALENDAR METHODS */      

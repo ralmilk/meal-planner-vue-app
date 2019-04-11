@@ -10,9 +10,9 @@
          <span class='float-left'>
             <label for='unit'>Unit*</label><br>
             <select name='unit' v-model='unit'>
-               <option v-for='(u, index) in units' 
-                     :key='index+1' 
-                     :value='index+1'>{{u}}
+               <option v-for='u in units' 
+                     :key='u.Id' 
+                     :value='u.Id'>{{u.Description}}
                </option>
             </select>
          </span>
@@ -53,13 +53,13 @@
 
 <script>
 import { eventBus } from '../../../main.js';
+import { mapGetters } from 'vuex';
 import RecipeIngredient from './RecipeIngredient';
 
 export default {
    props: ['ingredients'],
    data() {
       return {
-         units: ["","tsp","tbsp","cup","oz","lb","g","kg","dash"],
          warning: '',
 
          // ingredient data
@@ -91,6 +91,9 @@ export default {
       }
    },
    computed: {
+      ...mapGetters({
+         units: 'units/getAll'
+      }),
       totalCost() {
          let counter = 0;
          this.ingredients.forEach((el) => {

@@ -20,9 +20,9 @@
 
             <label for='unit'>Unit </label>
             <select name='unit' v-model='unit'>
-               <option v-for='(u, index) in units' 
-                       :key='index+1' 
-                       :value='index+1'>{{u}}
+               <option v-for='u in units' 
+                       :key='u.id' 
+                       :value='u.Id'>{{ u.Description }}
                </option>
             </select>
 
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import TheFormTemplate from '../TheFormTemplate';
 
 export default {
@@ -41,7 +42,6 @@ export default {
    data: function() {
       return {
          // display data
-         units: ["","tsp","tbsp","cup","oz","lb","g","kg","dash"],
          warning: '',
 
          // ingredient data
@@ -50,6 +50,11 @@ export default {
          unit: 1,
          cost: 0
       };
+   },
+   computed: {
+      ...mapGetters({
+         units: 'units/getAll'
+      }),
    },
    methods: {
       saveIngredient() {

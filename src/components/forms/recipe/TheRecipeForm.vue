@@ -35,9 +35,9 @@
                <span class='float-left'>
                   <label for='category'>Category *</label>
                   <select name='category' v-model='category'>
-                     <option v-for='(cat, index) in categories' 
-                             :key='index+1' 
-                             :value='index+1'>{{ cat }}
+                     <option v-for='cat in categories' 
+                             :key='cat.Id' 
+                             :value='cat.Id'>{{ cat.Description }}
                      </option>
                   </select>
                </span>
@@ -45,9 +45,9 @@
                <span class='float-left'>
                   <label for='subcategory'>Sub-Category *</label>
                   <select name='subcategory' v-model='subcategory'>
-                     <option v-for='(subcat, index) in subcategories' 
-                           :key='index+1' 
-                           :value='index+1'>{{ subcat }}
+                     <option v-for='subcat in subcategories' 
+                           :key='subcat.Id' 
+                           :value='subcat.Id'>{{ subcat.Description }}
                      </option>
                   </select>
                </span>
@@ -55,9 +55,9 @@
                <span class='float-left'>
                   <label for='difficulty'>Diffculty *</label>
                   <select required name='difficulty' v-model='difficulty'>
-                     <option v-for='(diff, index) in difficulties' 
-                             :key='index+1' 
-                             :value='index+1'>{{ diff }}
+                     <option v-for='diff in difficulties' 
+                             :key='diff.Id' 
+                             :value='diff.Id'>{{ diff.Description }}
                      </option>
                   </select>
                </span>
@@ -65,9 +65,9 @@
                <span class='float-left'>
                   <label for='genre'>Genre *</label>
                   <select required name='genre' v-model='genre'>
-                     <option v-for='(gen, index) in genres' 
-                             :key='index+1' 
-                             :value='index+1'>{{ gen }}
+                     <option v-for='gen in genres' 
+                             :key='gen.Id' 
+                             :value='gen.Id'>{{ gen.Description }}
                      </option>
                   </select>  
                </span>
@@ -82,16 +82,13 @@
 <script>
 import TheFormTemplate from '../TheFormTemplate';
 import TheRecipeIngredientList from '../recipe/TheRecipeIngredientList';
+import { mapGetters } from 'vuex';
 
 export default {
    props: ['id'],
    data: function() {
       return {
          // display data
-         categories: ['Entree','Side','Dessert','Ingredient'],
-         subcategories: ["Chicken","Beef","Pork","Turkey","Vegetarian","Soup","Salad"],
-         difficulties: ["Easy","Moderate","Hard","Expert"],
-         genres: ["American","Italian","Mexican","Asian","French","German"],
          warning: '',
 
          // recipe data
@@ -119,6 +116,14 @@ export default {
             }
          ]
       };
+   },
+   computed: {
+      ...mapGetters({
+         categories: 'categories/getAll',
+         subcategories: 'subcategories/getAll',
+         difficulties: 'difficulties/getAll',
+         genres: 'genres/getAll',
+      })
    },
    methods: {
       saveRecipe() {
