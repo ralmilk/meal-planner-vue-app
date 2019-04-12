@@ -1,11 +1,11 @@
 <template>
    <div class='list-item' :style="itemStyle" 
-                          :class="[evenOdd, item.isDeleted ? 'deleted' : '']">
+                          :class="[evenOdd, item.ActiveFlg === 'N' ? 'deleted' : '']">
       <p>
-         <span class='item-name'>{{ item.name }}</span>
+         <span class='item-name'>{{ type === 'Recipe' ? item.Title : item.Description }}</span>
 
          <span class='edit-delete' v-if='!item.isDeleted'>
-               <router-link :to='{ name: type.toLowerCase(), params: { id: item.id } }' 
+               <router-link :to='{ name: type.toLowerCase(), params: { id: item.Id } }' 
                            tag='i' 
                            class='fas fa-pencil-alt'>
                </router-link>
@@ -16,13 +16,13 @@
          </span>
          
          <span class='columns' v-if="type.toLowerCase() === 'recipe'">
-            <span class='item-subcategory'>{{ item.subcategory }}</span>
-            <span class='item-category'>{{ item.category }}</span>
-            <span class='item-genre'>{{ item.genre }}</span>
+            <span class='item-subcategory'>{{ (item.Subcategory || {}).Description }}</span>
+            <span class='item-category'>{{ (item.Category || {}).Description }}</span>
+            <span class='item-genre'>{{ (item.Genre || {}).Description }}</span>
          </span>
          <span class='columns' v-else>
-            <span class='item-quantity'>{{ item.quantity }}</span>
-            <span class='item-cost'>${{ item.cost === 0 ? '0.00' : item.cost }}</span>
+            <span class='item-quantity'>{{ `${item.Quantity} ${(item.Unit || {}).Description}` }}</span>
+            <span class='item-cost'>${{ item.Cost === 0 ? '0.00' : (item.Cost || 0).toFixed(2) }}</span>
          </span>
       </p>
    </div>

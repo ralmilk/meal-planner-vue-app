@@ -96,7 +96,7 @@ export default {
       }),
       totalCost() {
          let counter = 0;
-         this.ingredients.forEach((el) => {
+         (this.ingredients || []).forEach((el) => {
             counter += el.cost;
          });
          return counter.toFixed(2);

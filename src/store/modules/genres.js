@@ -31,9 +31,7 @@ const actions = {
          })
          .then(data => {
             data.forEach(cur => result.push(cur));    
-         }, error => {
-            console.log(error); // TODO remove for deploy
-         })
+         }, error => console.log(error))
          .then(() => {
             commit('setGenres', result);
          });

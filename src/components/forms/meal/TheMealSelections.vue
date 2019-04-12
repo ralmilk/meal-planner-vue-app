@@ -1,22 +1,76 @@
 <template>
    <div id='meal-selections'>
       <h3>Selections</h3>
-      <span> - Selections made above will appear below. Click (x) to remove a previous selection.</span>
-      <meal-selection-group 
-         v-for="(value, type) in selections" 
-         :key='type'
-         :val='value'
-         :type='type'>
-      </meal-selection-group>
+      <span> - Selections will appear below. Click (x) to remove a selection.</span>
+      <transition name='fade'>
+         <div id='entree-selections' v-if='entree.length > 0'>
+            <p class='selection-heading'>Entree:</p>        
+            <div class='selection'>
+               <p>{{ entree[0].name }}</p><i @click="removeSelection(entree.selectionIndex)" class="far fa-times-circle"></i>
+            </div> 
+         </div>
+      </transition>
+      <transition name='fade'>
+         <div id='side-selections' v-if='sides.length > 0'>
+            <p class='selection-heading'>Side(s):</p>
+               <div class='selection' 
+                     v-for='side in sides' 
+                     :key='side.Id'>
+               <p>{{ side.name }}</p><i @click="removeSelection(side.selectionIndex)" class="far fa-times-circle"></i>
+            </div> 
+         </div>
+      </transition>
+      <transition name='fade'>
+         <div id='dessert-selections' v-if='dessert.length > 0'>
+            <p class='selection-heading'>Desserts:</p>        
+            <div class='selection'>
+               <p>{{ dessert[0].name }}</p><i @click="removeSelection(dessert.selectionIndex)" class="far fa-times-circle"></i>
+            </div> 
+         </div>
+      </transition>
    </div>
 </template>
 
 <script>
-import MealSelectionGroup from './MealSelectionGroup';
+import {eventBus} from '../../../main.js';
 export default {
    props: ['selections'],
-   components: {
-      'meal-selection-group': MealSelectionGroup
+   computed: {
+      entree() {
+         return this.selections.map((el, index) => {
+            if(el.Category.Id === 1) {
+               return {
+                  selectionIndex: index,
+                  name: el.Recipe.Title
+               };
+            }
+         }).filter(el => el !== undefined);
+      },
+      sides() {
+        return (this.selections.map((el, index) => {
+            if(el.Category.Id === 2 || el.Category.Id === 4) {
+               return {
+                  selectionIndex: index,
+                  name: el.Category.Id === 4 ? el.Ingredient.Description : el.Recipe.Title 
+               };
+            } 
+         })).filter(el => el !== undefined);
+      },
+      dessert() {
+         return this.selections.map((el, index) => {
+            if(el.Category.Id === 3) {
+               return {
+                  selectionIndex: index,
+                  name: el.Recipe.Title
+               };
+            }
+         }).filter(el => el !== undefined);
+      }
+   },
+   methods: {
+      removeSelection(type, index = -1) {
+         eventBus.$emit('selectionDeleted', index);
+      }
    }
 }
 </script>

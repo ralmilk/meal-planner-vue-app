@@ -13,7 +13,7 @@
       </div>
       <div id='list'>
          <list-item v-for='(item, index) in items'
-                    :key='index'
+                    :key='item.Id'
                     :evenOdd='isEvenOrOdd(index)'
                     :item='item'
                     :type='type'>

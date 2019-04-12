@@ -13,21 +13,21 @@
          <div id='ingredient-details'>
             <h2>{{ id === "" ? 'New' : 'Edit' }} Ingredient</h2>
             <label class='min-width' for='description'>Description *</label>
-            <input autofocus type='text' name='description' v-model='description'><br>
+            <input autofocus type='text' name='description' v-model='ingredient.Description'><br>
 
             <label class='min-width' for='qty'>Quantity *</label>
-            <input type='number' name='qty' v-model='quantity'>
+            <input type='number' name='qty' v-model='ingredient.Quantity'>
 
             <label for='unit'>Unit </label>
-            <select name='unit' v-model='unit'>
+            <select name='unit' v-model='ingredient.Unit.Id'>
                <option v-for='u in units' 
-                       :key='u.id' 
+                       :key='u.Id' 
                        :value='u.Id'>{{ u.Description }}
                </option>
             </select>
 
             <label for='cost'>Cost $ *</label>
-            <input type='number' step='0.01' name='cost' v-model='cost'>
+            <input type='number' step='0.01' name='cost' v-model='ingredient.Cost'>
          </div>
       </div>
    </the-form-template>
@@ -45,11 +45,20 @@ export default {
          warning: '',
 
          // ingredient data
-         description: '',
-         quantity: 0,
-         unit: 1,
-         cost: 0
+         ingredient: {
+            Description: '',
+            Quantity: 0,
+            Unit: {
+               Id: 1
+            },
+            Cost: 0
+         }
       };
+   },
+   created() {
+      if(this.id) {
+         this.getIngredient();
+      }
    },
    computed: {
       ...mapGetters({
@@ -57,6 +66,15 @@ export default {
       }),
    },
    methods: {
+      getIngredient() {
+         this.$http.get(`ingredient/${this.id}`)
+            .then(response => {
+               return response.json();
+            })
+            .then(data => {
+               this.ingredient = data;
+            }, error => console.log(error));
+      },
       saveIngredient() {
          // TODO: verify required fields
          if(this.description === '' || this.quantity <= 0 || this.cost <= 0) {

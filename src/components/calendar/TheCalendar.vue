@@ -257,7 +257,7 @@ export default {
                   subcategory: cur.Subcategory
                });
             }
-      
+
             // wrap meals around to following weeks as appropriate
             var mealStartDOW = new Date(cur.StartDate).getDay();
             if(mealStartDOW + cur.Servings > 7) {
@@ -266,9 +266,9 @@ export default {
                   servings: 7 - mealStartDOW,
                   startDate: cur.StartDate,
                   mealType: this.processMealTime(cur.MealTime),
-                  isRestaurant: cur.MealType === "Y",
+                  isRestaurant: cur.MealType === "R",
                   isPrepDay: false,
-                  title: this.processTitle(cur.Title),
+                  title: cur.MealType === "R" ? 'Restaurant' : this.processTitle(cur.Title),
                   subcategory: cur.Subcategory
                });
 
@@ -280,9 +280,9 @@ export default {
                      servings: cur.Servings - (7 - mealStartDOW),
                      startDate: futureStartDate,
                      mealType: this.processMealTime(cur.MealTime),
-                     isRestaurant: cur.MealType === "Y",
+                     isRestaurant: cur.MealType === "R",
                      isPrepDay: false,
-                     title: this.processTitle(cur.Title),
+                     title: cur.MealType === "R" ? 'Restaurant' : this.processTitle(cur.Title),
                      subcategory: cur.Subcategory
                   });
                }
@@ -293,9 +293,9 @@ export default {
                   servings: cur.Servings,
                   startDate: cur.StartDate,
                   mealType: this.processMealTime(cur.MealTime),
-                  isRestaurant: cur.MealType === "Y",
+                  isRestaurant: cur.MealType === "R",
                   isPrepDay: false,
-                  title: this.processTitle(cur.Title),
+                  title: cur.MealType === "R" ? 'Restaurant' : this.processTitle(cur.Title),
                   subcategory: cur.Subcategory
                });
             }

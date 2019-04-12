@@ -1,23 +1,19 @@
 <template>
-      <transition name="modal" v-if='true' appear>
+      <transition name="modal" v-if='showModal' appear>
          <div class="modal-mask">
             <div class="modal-wrapper">
                <div class="modal-container">
                   <div class="modal-header">
-                     <slot name="header">
-                     Default Header
-                     </slot>
+                     {{ text }}
                   </div>
 
                   <div class="modal-footer">
-                     <slot name="footer">
-                        <button class="modal-accept-button" @click="alert('accept')">
-                           OK
-                        </button>
-                        <button class="modal-cancel-button" @click="alert('cancel')">
-                           Cancel
-                        </button>
-                     </slot>
+                     <button class="modal-accept-button" @click="sendModalResponse(true)">
+                        OK
+                     </button>
+                     <button class="modal-cancel-button" @click="sendModalResponse(false)">
+                        Cancel
+                     </button>
                   </div>
                </div>
             </div>
@@ -26,8 +22,14 @@
 </template>
 
 <script>
+import {eventBus} from '../../main.js';
 export default {
-   props: ['action','showModal'],
+   props: ['text','showModal'],
+   methods: {
+      sendModalResponse(response) {
+         eventBus.$emit('modalResponse', response);
+      }
+   }
 }
 </script>
 

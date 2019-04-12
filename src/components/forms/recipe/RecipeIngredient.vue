@@ -5,7 +5,7 @@
          <span class='edit-delete'>
                <i class="far fa-times-circle" @click='deleteIngredient()'></i>
          </span>
-         <span class='item-cost'>${{ ingredient.cost.toFixed(2) }}</span>
+         <span class='item-cost'>${{ ingredient.Cost.toFixed(2) }}</span>
       </p>
    </div>
 </template>
@@ -16,7 +16,7 @@ export default {
    props: ['evenOdd', "ingredient", "index"],
    methods: {
       getNameString() {
-         return `${this.ingredient.quantity} ${this.ingredient.unit} ${this.ingredient.description}`;
+         return `${this.ingredient.Quantity} ${this.ingredient.Unit.Description} ${this.ingredient.Description}`;
       },
       deleteIngredient() {
          eventBus.$emit('deletedRecipeIngredient', this.index);

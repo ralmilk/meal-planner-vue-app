@@ -15,6 +15,6 @@ export const store = new Vuex.Store({
       genres,
       difficulties,
       units,
-      meals
+      meals,
    }
 });

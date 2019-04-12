@@ -9,32 +9,32 @@
          </router-link>   
       </div>
 
-      <div slot='form-body' >
+      <div slot='form-body' v-if='recipe !== undefined'>
          <div id='recipe-detail-container'>
             <div id='recipe-details'>
                <h2>Details</h2>         
 
                <label for='title'>Title *</label>
-               <input autofocus type='text' name='title' v-model='title'><br>
+               <input autofocus type='text' name='title' v-model='recipe.Title'><br>
             
                <span class='textarea-group'>
                   <label for='description'>Description</label>
-                  <textarea name="description" v-model='description'></textarea>
+                  <textarea name="description" v-model='recipe.Description'></textarea>
                </span>
 
                <span class='float-left'>
                   <label for='prepTime'>Prep Time *</label>
-                  <input type='number' name='prepTime' step='5' v-model='prepTime'>
+                  <input type='number' name='prepTime' step='5' v-model='recipe.PrepTime'>
                </span>
 
                <span class='float-left'>
                   <label for='cookTime'>Cook Time *</label>
-                  <input type='number' name='cookTime' step='5' v-model='cookTime'>
+                  <input type='number' name='cookTime' step='5' v-model='recipe.CookTime'>
                </span>
 
                <span class='float-left'>
                   <label for='category'>Category *</label>
-                  <select name='category' v-model='category'>
+                  <select name='category' v-model='recipe.CategoryId'>
                      <option v-for='cat in categories' 
                              :key='cat.Id' 
                              :value='cat.Id'>{{ cat.Description }}
@@ -44,7 +44,7 @@
 
                <span class='float-left'>
                   <label for='subcategory'>Sub-Category *</label>
-                  <select name='subcategory' v-model='subcategory'>
+                  <select name='subcategory' v-model='recipe.SubcategoryId'>
                      <option v-for='subcat in subcategories' 
                            :key='subcat.Id' 
                            :value='subcat.Id'>{{ subcat.Description }}
@@ -54,7 +54,7 @@
 
                <span class='float-left'>
                   <label for='difficulty'>Diffculty *</label>
-                  <select required name='difficulty' v-model='difficulty'>
+                  <select required name='difficulty' v-model='recipe.DifficultyId'>
                      <option v-for='diff in difficulties' 
                              :key='diff.Id' 
                              :value='diff.Id'>{{ diff.Description }}
@@ -64,17 +64,18 @@
 
                <span class='float-left'>
                   <label for='genre'>Genre *</label>
-                  <select required name='genre' v-model='genre'>
+                  <select required name='genre' v-model='recipe.GenreId'>
                      <option v-for='gen in genres' 
                              :key='gen.Id' 
                              :value='gen.Id'>{{ gen.Description }}
                      </option>
                   </select>  
+                  <p>{{ recipe.Genre }}</p>
                </span>
             </div>
          </div>
 
-         <the-recipe-ingredient-list :ingredients='ingredients'></the-recipe-ingredient-list>
+         <the-recipe-ingredient-list :ingredients='recipe.Ingredients'></the-recipe-ingredient-list>
       </div>
    </the-form-template>
 </template>
@@ -90,48 +91,58 @@ export default {
       return {
          // display data
          warning: '',
-
-         // recipe data
-         title: '',
-         description: '',
-         prepTime: 0,
-         cookTime: 0,
-         activeFlag: 'Y',
-         category: 1,
-         subcategory: 1,
-         difficulty: 1,
-         genre: 1,
-         ingredients: [
-            { 
-               description: 'egg',
-               quantity: 1,
-               unit: "",
-               cost: .15
+         recipe: {
+            Title: '',
+            Description: '',
+            PrepTime: 0,
+            CookTime: 0,
+            ActiveFlg: 'Y',
+            Category: { 
+               Id: 1 
             },
-            { 
-               description: 'flour',
-               quantity: 1,
-               unit: "cup",
-               cost: .15
-            }
-         ]
+            Subcategory: { 
+               Id: 1 
+            },
+            Difficulty: { 
+               Id: 1 
+            },
+            Genre: { 
+               Id: 1 
+            },
+            Ingredients: []
+         }
       };
+   },
+   created() {
+      if(this.id) {
+         this.getRecipe();
+      }
    },
    computed: {
       ...mapGetters({
          categories: 'categories/getAll',
          subcategories: 'subcategories/getAll',
          difficulties: 'difficulties/getAll',
-         genres: 'genres/getAll',
+         genres: 'genres/getAll'
       })
    },
    methods: {
+      getRecipe() {
+         this.$http.get(`recipe/${this.id}`)
+            .then(response => {
+               return response.json();
+            })
+            .then(data => {
+               this.recipe = data;
+            }, error => console.log(error));
+      },
       saveRecipe() {
          // TODO: verify required fields
          if(true) {
             this.warning = 'Please include all required fields.';
          }
          else {
+            // determine whether it's a save or a create
             alert('save recipe');
             this.resetForm();
          }
@@ -188,10 +199,11 @@ export default {
     min-width: 90px;
     display: inline-block;
 }
-#recipe-details input[type='text'], textarea {
-    min-width: calc(100% - 115px);
-    max-width: calc(100% - 115px);
-    margin-bottom: 10px;
+#recipe-details input[type='text'], textarea {    
+   font-size: 95%;
+   min-width: calc(100% - 115px);
+   max-width: calc(100% - 115px);
+   margin-bottom: 10px;
 }
 #recipe-details select {
     min-width: 106px;
@@ -201,7 +213,6 @@ export default {
     width: 50%;
 }
 textarea {
-    font-size: 110%;
     font-family: 'Ink Free Regular', sans-serif;
     height: 70px;
 }

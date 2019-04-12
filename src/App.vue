@@ -162,7 +162,7 @@ input[type=date] {
     opacity: 0
 }
 .fade-fast-enter-active, .fade-fast-leave-active {
-    transition: opacity .1s
+    transition: opacity .25s
 }
 .fade-fast-enter, .fade-fast-leave-to /* .fade-leave-active in <2.1.8 */ {
     opacity: 0

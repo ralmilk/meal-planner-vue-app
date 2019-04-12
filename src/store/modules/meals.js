@@ -4,18 +4,29 @@ import Resource from 'vue-resource';
 Vue.use(Resource);
 
 const state = {
-   meals: []
+   meals: [],
+   dates: {
+      startDate: '',
+      endDate: ''
+   }
 };
 
 const getters = {
    getMeals(state) {
       return state.meals;
+   },
+   getDates(state) {
+      return state.dates;
    }
 };
 
 const mutations = {
    setMeals(state, payload) {
       state.meals = payload;
+   },
+   setDates(state, payload) {
+      state.dates.startDate = payload.startDate;
+      state.dates.endDate = payload.endDate;
    }
 };
 
@@ -31,11 +42,10 @@ const actions = {
          })
          .then(data => {
             data.forEach(cur => result.push(cur));    
-         }, error => {
-            console.log(error); // TODO remove for deploy
-         })
+         }, error => console.log(error))
          .then(() => {
             commit('setMeals', result);
+            commit('setDates', payload);
          });
    }
 };
