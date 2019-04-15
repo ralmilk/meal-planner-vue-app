@@ -5,7 +5,7 @@
          <span class='edit-delete'>
                <i class="far fa-times-circle" @click='deleteIngredient()'></i>
          </span>
-         <span class='item-cost'>${{ ingredient.Cost.toFixed(2) }}</span>
+         <span class='item-cost'>${{ getCost() }}</span>
       </p>
    </div>
 </template>
@@ -14,16 +14,20 @@
 import { eventBus } from '../../../main.js';
 export default {
    props: {
-      evenOdd: Boolean, 
-      ingredient: Object, 
-      index: Number
+      evenOdd: String, 
+      ingredient: Object
    },
    methods: {
       getNameString() {
-         return `${this.ingredient.Quantity} ${this.ingredient.Unit.Description} ${this.ingredient.Description}`;
+         return `${this.ingredient.Quantity} ${this.ingredient.Unit.Description} ${this.ingredient.Ingredient.Description}`;
+      },
+      getCost() {
+         // convert all costs and quantities to a standard unit of measure?
+         // TODO: get conversion chart for costs
+         return this.ingredient.Quantity.toFixed(2);
       },
       deleteIngredient() {
-         eventBus.$emit('deletedRecipeIngredient', this.index);
+         eventBus.$emit('deletedRecipeIngredient', this.ingredient.Id);
       }
    }
 }

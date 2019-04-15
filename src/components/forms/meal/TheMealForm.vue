@@ -59,8 +59,12 @@
                <div id='meal-component-search'>
                   <label for='recipe'>Search</label>
                   <input type='text' placeholder="Search Recipes/Ingredients" @input='searchRecipesOrIngredients' v-model='searchString'>   
-                  <div id='search-results' v-if='searchResults.length > 0'>
-                     <p class='search-result' v-for='result in searchResults' :key='result.Id'>{{ result.Title }}</p>
+                  <div id='search-results' :style='{ height: (searchResults.length * 22) + "px" }'>
+                     <p class='search-result' 
+                        v-for='result in searchResults' 
+                        @click='selectComponent(result)' 
+                        :key='result.Id'>{{ category === 4 ? result.Description : result.Title }}
+                     </p>
                   </div>     
                   <input class='add-btn' type='button' name='addComponent' value='  +  ' @click='addMealComponent'>
                </div>
@@ -114,7 +118,7 @@ export default {
          category: 1,
          searchResults: [],
          searchString: '',
-         searchId: 1,
+         searchId: 0,
          deletedComponentIds: [],
 
          /* Modal fields */
@@ -148,6 +152,11 @@ export default {
                console.log(error); // TODO remove for deploy
             });
       },
+      selectComponent(selectedResult) {
+         this.searchId = selectedResult.Id;
+         this.searchString = selectedResult.Title === undefined ? selectedResult.Description : selectedResult.Title;
+         this.searchResults = [];
+      },
       searchRecipesOrIngredients() {
          if(this.searchString.length >= 3) {
             let result = [];
@@ -160,7 +169,6 @@ export default {
                         error => console.log(error))
                   .then(() => {
                      this.searchResults = result;
-                     console.log(this.searchResults);
                   });
             } else {
                this.$http.get(`recipe/search/${this.searchString}`)
@@ -171,33 +179,40 @@ export default {
                         error => console.log(error))
                   .then(() => {
                      this.searchResults = result;
-                     console.log(this.searchResults);
                   });
             }
          }
       },
-// TODO FINISH SEARCH FUNCTIONALITY FOR COMPONENTS
       addMealComponent(){
-         var newComponent = {
-            Id: 0,
-            Category: {
-               Id: this.category
+         if(this.searchString !== '' && this.searchId > 0) {
+            if(this.meal.MealComponents.findIndex(x => x.Category.Id === 1) >= 0 && this.category === 1) {
+               this.warning = 'You may only select one Entree.';
+            } else if(this.meal.MealComponents.findIndex(x => x.Category.Id === 3) >= 0 && this.category === 3) {
+               this.warning = 'You may only select one Dessert.';
+            } else {
+               var newComponent = {
+                  Id: 0,
+                  Category: {
+                     Id: this.category
+                  }
+               };
+
+               if(this.category === 4) {
+                  newComponent.Ingredient = {
+                     Id: this.searchId,
+                     Description: this.searchString
+                  };
+               } else {
+                  newComponent.Recipe = {
+                     Id: this.searchId,
+                     Title: this.searchString
+                  };
+               }
+
+               this.meal.MealComponents.push(newComponent);
+               this.searchString = '';
             }
-         };
-
-         if(this.category === 4) {
-            newComponent.Ingredient = {
-               Id: this.searchId,
-               Description: this.searchString
-            };
-         } else {
-            newComponent.Recipe = {
-               Id: this.searchId,
-               Title: this.searchString
-            };
          }
-
-         this.meal.MealComponents.push(newComponent);
       },
       deleteMeal() {
          this.modalText = 'Are you sure you want to delete this meal?';
@@ -209,16 +224,15 @@ export default {
                   .then(data => console.log(`successfully completed callback: ${this.id}`),
                         error => console.log(error))
                   .then(() => {
-                     this.$router.push({name: 'calendar'});
+                     this.$router.push({name: 'Calendar'});
                   });
             };
       },
-// TODO TEST ADDING COMPONENTS
       submit(){ 
          // validate submission (at least one selection, plus other req fields)
          if (this.meal.Servings > 0 
              && this.meal.StartDate !== ''
-             && ((this.meal.MealType === 'H' && this.meal.MealComponents.length > 0) 
+             && ((this.meal.MealType === 'H' && this.meal.MealComponents.length > 0)
                   || this.meal.MealType === 'R')) 
          {
             // store id for use by meal components
@@ -229,13 +243,14 @@ export default {
             this.meal.StartDate = `${splitDate[1]}-${splitDate[2]}-${splitDate[0]}`;      
 
             if (mealId) {
-               this.$http.put(`meal`, this.meal)
-                  .then(response => console.log(response))
-                  .then(data => console.log(`successfully updated meal: ${mealId}`),
+               this.$http.put(`meal/${mealId}`, this.meal)
+                  .then(response => console.log(`successfully updated meal: ${mealId}`),
                         error => console.log(error))
                   .then(() => {
                      if (this.meal.MealType === 'R') {
-                        this.$router.push({name: 'calendar'});
+                        this.$router.push({name: 'Calendar'});
+                     } else {
+                        this.addUpdateComponents(mealId);
                      }
                   });
             }
@@ -250,63 +265,57 @@ export default {
                   }, error => console.log(error))
                   .then(() => {
                      if (this.meal.MealType === 'R') {
-                        this.$router.push({name: 'calendar'});
+                        this.$router.push({name: 'Calendar'});
+                     } else {
+                        this.addUpdateComponents(mealId);
                      }
                   });
             }
-
-            // add/update meal components w/ id returned from that call
-            // only 'H' meals should have it's components saved
-            if(this.meal.MealType === 'H') {
-               var dbFormatComponents = this.meal.MealComponents.map(el => {
-                  return {
-                     MealId: mealId,
-                     CategoryId: el.Category.Id,
-                     RecipeId: el.Recipe.Id > 0 ? el.Recipe.Id : null,
-                     IngredientId: el.Ingredient > 0 ? el.Ingredient.Id : null
-                  };
-               });
-
-               // make all DB calls for the meal components
-               let componentCount = dbFormatComponents.length;
-               dbFormatComponents.forEach((el, index) => {
-                  if (el.Id > 0) {
-                     if(deletedComponentIds.find(x => x.id === el.Id) > -1) { // delete meal component
-                        this.$http.delete(`mealComponent/${el.Id}`)
-                           .then(response => console.log(response))
-                           .then(data => console.log(`successfully updated meal component`),
-                                 error => console.log(error))
-                           .then(() => {
-                              if (index === componentCount - 1) {
-                                 this.$router.push({name: 'calendar'});
-                              }
-                           });
-                     } else { // update component
-                        this.$http.put(`mealComponent`, el)
-                           .then(response => console.log(response))
-                           .then(data => console.log(`successfully updated meal component`),
-                                 error => console.log(error))
-                           .then(() => {
-                              if (index === componentCount - 1) {
-                                 this.$router.push({name: 'calendar'});
-                              }
-                           });
-                     }
-                  } else { // add new component
-                     this.$http.post(`mealComponent`, el)
-                        .then(response => console.log(response))
-                        .then(data => console.log(`successfully added meal component`),
-                              error => console.log(error))
-                        .then(() => {
-                           if (index === componentCount - 1) {
-                             this.$router.push({name: 'calendar'});
-                           }
-                        });
-                  }                
-               });
-            }
          }
-      }     
+      }, 
+      addUpdateComponents(mealId) {
+         // format the meal components for entry into the DB
+         var dbFormatComponents = this.meal.MealComponents.map(el => {
+            return {
+               Id: el.Id,
+               MealId: mealId,
+               CategoryId: el.Category.Id,
+               RecipeId: el.Recipe ? el.Recipe.Id : null,
+               IngredientId: el.Ingredient ? el.Ingredient.Id : null
+            };
+         });
+         
+         // remove all deleted mealComponents
+         this.deletedComponentIds.forEach((id) => {
+            this.$http.delete(`mealComponent/${id}`)
+               .then(response => console.log(`successfully deleted meal component`),
+                     error => console.log(error));
+         });
+
+         // add or update all mealComponents
+         let componentCount = dbFormatComponents.length;
+         dbFormatComponents.forEach((el, index) => {
+            if (el.Id > 0) {
+               this.$http.put(`mealComponent/${el.Id}`, el)
+                  .then(response => console.log(`successfully updated meal component`),
+                        error => console.log(error))
+                  .then(() => {
+                     if (index === componentCount - 1) {
+                        this.$router.push({name: 'Calendar'});
+                     }
+                  });
+            } else { // add new component
+               this.$http.post(`mealComponent`, el)
+                  .then(response => console.log(`successfully added meal component`),
+                        error => console.log(error))
+                  .then(() => {
+                     if (index === componentCount - 1) {
+                        this.$router.push({name: 'Calendar'});
+                     }
+                  });
+            }                
+         });
+      }
    }, 
    computed: {
       ...mapGetters({
@@ -316,6 +325,7 @@ export default {
    watch: {
       category() {
          this.warning = '';
+         this.searchString = '';
       }
    },
    created() {
@@ -328,8 +338,10 @@ export default {
          }
       });
       eventBus.$on('selectionDeleted', (index) => {
-         this.deletedComponentIds.push(index);
-         this.meal.MealComponents.splice(index, 1);
+         if(index !== undefined) {
+            this.deletedComponentIds.push(this.meal.MealComponents[index].Id);
+            this.meal.MealComponents.splice(index, 1);
+         }
       });
       eventBus.$on('radioValueChanged', (name, value) => {
          if(name === 'mealTime') {
@@ -359,7 +371,7 @@ export default {
 #meal-component-search {
    position: relative;
 }
-#search-results {
+#meal-component-search #search-results {
    height: 150px; 
    width: 200px; 
    background-color: white; 
@@ -369,10 +381,10 @@ export default {
    min-width: calc(100% - 147px);
    overflow-y: scroll;
 }
-.search-result {
+#meal-component-search .search-result {
    cursor: pointer;
 }
-.search-result:hover {
+#meal-component-search .search-result:hover {
    background-color: #EAEBF0;
 }
 .meal-form-container {

@@ -6,7 +6,7 @@
          <div id='entree-selections' v-if='entree.length > 0'>
             <p class='selection-heading'>Entree:</p>        
             <div class='selection'>
-               <p>{{ entree[0].name }}</p><i @click="removeSelection(entree.selectionIndex)" class="far fa-times-circle"></i>
+               <p>{{ entree[0].name }}</p><i @click="removeSelection(entree[0].selectionIndex)" class="far fa-times-circle"></i>
             </div> 
          </div>
       </transition>
@@ -24,7 +24,7 @@
          <div id='dessert-selections' v-if='dessert.length > 0'>
             <p class='selection-heading'>Desserts:</p>        
             <div class='selection'>
-               <p>{{ dessert[0].name }}</p><i @click="removeSelection(dessert.selectionIndex)" class="far fa-times-circle"></i>
+               <p>{{ dessert[0].name }}</p><i @click="removeSelection(dessert[0].selectionIndex)" class="far fa-times-circle"></i>
             </div> 
          </div>
       </transition>
@@ -38,7 +38,7 @@ export default {
       selections: Array
    },
    methods: {
-      removeSelection(type, index = -1) {
+      removeSelection(index) {
          eventBus.$emit('selectionDeleted', index);
       }
    },

@@ -5,11 +5,11 @@
       <div id='ingredient-inputs'>   
          <span class='float-left'>
             <label for='qty'>Qty*</label><br>
-            <input type='number' name='qty' step='0.01' v-model='quantity'>
+            <input type='number' name='qty' step='0.01' v-model='ingredient.Quantity'>
          </span>
          <span class='float-left'>
             <label for='unit'>Unit*</label><br>
-            <select name='unit' v-model='unit'>
+            <select name='unit' v-model='ingredient.Unit.Id'>
                <option v-for='u in units' 
                      :key='u.Id' 
                      :value='u.Id'>{{u.Description}}
@@ -18,7 +18,14 @@
          </span>
          <span class='float-left ingredient-description'>
             <label for='ingredient'>Description*</label><br>
-            <input type='text' name='ingredient' placeholder="Search" v-model='description'>
+            <input type='text' name='ingredient' placeholder="Search" @input='searchIngredients' v-model='ingredient.Description'>       
+            <div id='search-results' :style='{ height: (searchResults.length * 22) + "px" }'>
+               <p class='search-result' 
+                  v-for='result in searchResults' 
+                  @click='selectIngredient(result)' 
+                  :key='result.Id'>{{ result.Description }}
+               </p>
+            </div>
          </span>
          <span class='float-left'>
             <span>Add</span><br>
@@ -35,14 +42,11 @@
                </p>
          </div>
          <div id='list'>
-            <!-- <transition-group name='fade' mode='out-in'> appear -->
-               <recipe-ingredient v-for='(ingredient, index) in ingredients'
-                                 :key='ingredient.description+index'
-                                 :ingredient='ingredient'
-                                 :evenOdd='isEvenOrOdd(index)'
-                                 :index='index'>
-               </recipe-ingredient>
-            <!-- </transition-group> -->
+            <recipe-ingredient v-for='(ingr, index) in ingredients'
+                              :key='ingr.Id'
+                              :ingredient='ingr'
+                              :evenOdd='isEvenOrOdd(index)'>
+            </recipe-ingredient>
          </div> 
          <div id='list-footer'>
             <p><span class='total-cost'>Total Cost:</span>${{ totalCost }}</p>
@@ -63,32 +67,51 @@ export default {
    data() {
       return {
          warning: '',
+         searchResults: [],
 
-         // ingredient data
-         description: '',
-         quantity: 1,
-         unit: 1
+         // ingredient form data
+         ingredient: {
+            Id: 0,
+            Description: '',
+            Quantity: 1,
+            Unit: {
+               Id: 1
+            }
+         }
       }
    },
    methods: {
       isEvenOrOdd(num) {
          return num % 2 == 0 ? 'even' : 'odd';
       },
+      selectIngredient(selectedResult) {
+         this.ingredient.Id = selectedResult.Id;
+         this.ingredient.Description = selectedResult.Description;
+         this.searchResults = [];
+      },
+      searchIngredients() {
+         if(this.ingredient.Description.length >= 3) {    
+            let result = [];   
+            this.$http.get(`ingredient/search/${this.ingredient.Description}`)
+               .then(response => {
+                  return response.json();
+               })
+               .then(data => data.forEach(cur => result.push(cur)), 
+                     error => console.log(error))
+               .then(() => {
+                  this.searchResults = result;
+               });
+         }
+      },
       addIngredient() {
-         if(this.description === '' || this.quantity <= 0 || this.cost <= 0) {
-            this.warning = 'Please include all required fields.';
-         } else {
-            this.ingredients.push({
-               description: this.description,
-               quantity: this.quantity,
-               unit: this.units[this.unit-1],
-               cost: 0 //TODO get cost from db
-            });
-
-            this.description = '';
-            this.quantity = 1;
-            this.unit = 1;
-            this.warning = '';
+         if(this.ingredient.Description !== '' && this.ingredient.Quantity > 0) {
+            eventBus.$emit('addIngredientToList', this.ingredient);
+            this.ingredient = {
+               Id: 0,
+               Description: '',
+               Quantity: 1,
+               UnitId: 1
+            }
          }
       }
    },
@@ -116,6 +139,25 @@ export default {
 </script>
 
 <style scoped>
+#ingredient-inputs {
+   position: relative;
+}
+#ingredient-inputs #search-results {
+   background-color: #fff; 
+   position: absolute;
+   left: 113px;
+   top: 44px;
+   min-width: calc(100% - 158px);
+   overflow-y: scroll;
+   border: .1px solid #303C6C;
+}
+#ingredient-inputs .search-result {
+   cursor: pointer;
+   padding-left: 2px;
+}
+#ingredient-inputs .search-result:hover {
+   background-color: #EAEBF0;
+}
 .warning {
    color: #fff;
    background-color: #F36666;

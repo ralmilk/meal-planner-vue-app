@@ -264,7 +264,7 @@ export default {
                      mealType: this.processMealTime(cur.MealTime),
                      isRestaurant: cur.MealType === "R",
                      isPrepDay: false,
-                     title: cur.MealType === "R" ? 'Restaurant' : this.processTitle(cur.Title),
+                     title: '(cont.) ' + (cur.MealType === "R" ? 'Restaurant' : this.processTitle(cur.Title)),
                      subcategory: cur.Subcategory
                   });
                }

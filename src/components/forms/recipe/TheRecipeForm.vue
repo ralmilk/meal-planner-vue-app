@@ -2,7 +2,7 @@
    <the-form-template :type="'recipe'"> 
       <div id='topbar' slot='topbar-content'>
          <span class='warning' v-if='this.warning !== ""'>{{ warning }}</span>
-         <input class='btn' @click.prevent='saveRecipe()' type='submit' value='Save'>
+         <input class='btn' @click.prevent='submit()' type='submit' value='Save'>
          <a v-if='id !== undefined' class='btn btn-delete' @click='deleteRecipe()'>Delete Recipe</a>
          <router-link :to="{ name: 'List', params: { type: 'Recipe' } }" 
                       class='btn'><a>Cancel</a>
@@ -69,50 +69,44 @@
                              :key='gen.Id' 
                              :value='gen.Id'>{{ gen.Description }}
                      </option>
-                  </select>  
-                  <p>{{ recipe.Genre }}</p>
+                  </select>
                </span>
             </div>
          </div>
 
-         <the-recipe-ingredient-list :ingredients='recipe.Ingredients'></the-recipe-ingredient-list>
+         <the-recipe-ingredient-list v-if='ingredientsLoaded' :ingredients='ingredients'></the-recipe-ingredient-list>
       </div>
    </the-form-template>
 </template>
 
 <script>
+import { eventBus } from '../../../main.js';
+import { mapGetters } from 'vuex';
 import TheFormTemplate from '../TheFormTemplate';
 import TheRecipeIngredientList from '../recipe/TheRecipeIngredientList';
-import { mapGetters } from 'vuex';
 
 export default {
    props: {
       id: Number
    },
-   data: function() {
+   data() {
       return {
          // display data
          warning: '',
+         ingredientsLoaded: false,
+
          recipe: {
             Title: '',
             Description: '',
             PrepTime: 0,
             CookTime: 0,
             ActiveFlg: 'Y',
-            Category: { 
-               Id: 1 
-            },
-            Subcategory: { 
-               Id: 1 
-            },
-            Difficulty: { 
-               Id: 1 
-            },
-            Genre: { 
-               Id: 1 
-            },
-            Ingredients: []
-         }
+            CategoryId: 1,
+            SubcategoryId: 1,
+            DifficultyId: 1,
+            GenreId: 1
+         },
+         ingredients: []
       };
    },
    methods: {
@@ -124,8 +118,20 @@ export default {
             .then(data => {
                this.recipe = data;
             }, error => console.log(error));
+
+         let tempIngredients = [];
+         this.$http.get(`recipeIngredient/full/${this.id}`)
+            .then(response => {
+               return response.json();
+            })
+            .then(data => data.forEach(cur => tempIngredients.push(cur)),
+                  error => console.log(error))
+            .then(() => {
+               this.ingredients = tempIngredients;
+               this.ingredientsLoaded = true;
+            });
       },
-      saveRecipe() {
+      submit() {
          // TODO: verify required fields
          if(true) {
             this.warning = 'Please include all required fields.';
@@ -133,15 +139,10 @@ export default {
          else {
             // determine whether it's a save or a create
             alert('save recipe');
-            this.resetForm();
          }
       },
       deleteRecipe() {
          alert('delete this ingredient');
-         this.resetForm();
-      },
-      resetForm() {
-         
       }
    },
    computed: {
@@ -150,12 +151,14 @@ export default {
          subcategories: 'subcategories/getAll',
          difficulties: 'difficulties/getAll',
          genres: 'genres/getAll'
-      })
+      }),
    },
    created() {
-      if(this.id) {
-         this.getRecipe();
-      }
+      if(this.id) this.getRecipe();
+
+      eventBus.$on('addIngredientToList', (ingredient) => {
+         this.recipe.Ingredients.push(ingredient);
+      });
    },
    components: {
       'the-form-template': TheFormTemplate,
