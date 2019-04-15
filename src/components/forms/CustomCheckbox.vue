@@ -8,7 +8,11 @@
 <script>
 import {eventBus} from '../../main.js';
 export default {
-   props: ['n','text', 'isChecked'],
+   props: {
+      n: String,
+      text: String, 
+      isChecked: Boolean
+   },
    methods: {
       checkboxChanged(name) {
          eventBus.$emit('checkboxChanged', name);

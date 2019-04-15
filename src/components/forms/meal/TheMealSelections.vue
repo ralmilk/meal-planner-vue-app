@@ -34,7 +34,9 @@
 <script>
 import {eventBus} from '../../../main.js';
 export default {
-   props: ['selections'],
+   props: {
+      selections: Array
+   },
    computed: {
       entree() {
          return this.selections.map((el, index) => {

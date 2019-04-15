@@ -25,7 +25,10 @@
 <script>
 import ListItem from './ListItem';
 export default {
-   props: ['items', 'type'],
+   props: {
+      items: Array,
+      type: String
+   },
    methods: {
       isEvenOrOdd(num) {
          return num % 2 == 0 ? 'even' : 'odd';

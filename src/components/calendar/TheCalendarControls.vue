@@ -9,19 +9,22 @@
          class="fas fa-arrow-right fa-lg arrow"
          @click="arrowClicked('next')">
       </i>
-      <router-link :to="{ name: 'meal' }" tag='button' class='btn'>Add New Meal</router-link>
+      <router-link :to="{ name: 'Meal' }" tag='button' class='btn'>Add New Meal</router-link>
    </div>
 </template>
 
 <script>
 import { eventBus } from '../../main.js';
 export default {
-    props: ['month','year'],
-    methods: {
-        arrowClicked(type) {
-            eventBus.$emit('arrowClicked', type);
-        }
-    }
+   props: {
+      month: String,
+      year: Number
+   },
+   methods: {
+      arrowClicked(type) {
+         eventBus.$emit('arrowClicked', type);
+      }
+   }
 }
 </script>
 

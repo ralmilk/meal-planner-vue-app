@@ -12,7 +12,12 @@
 <script>
 import { eventBus } from '../../main.js';
 export default {
-   props: ['n','text','val', 'isChecked'],
+   props: {
+      n: String,
+      text: String, 
+      val: String,
+      isChecked: Boolean
+   },
    methods: {
       radioValueChanged(name, value) {
          eventBus.$emit('radioValueChanged', name, value);

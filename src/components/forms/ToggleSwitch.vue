@@ -12,7 +12,10 @@
 import { eventBus } from '../../main.js';
 
 export default {
-   props: ['leftDescr','rightDescr'],
+   props: {
+      leftDescr: String,
+      rightDescr: String
+   },
    methods: {
       switchToggled(){
          eventBus.$emit('switchToggled', 'showDeleted');

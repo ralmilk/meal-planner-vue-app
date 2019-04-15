@@ -9,7 +9,9 @@
 
 <script>
 export default {
-   props: ['type']
+   props: {
+      type: String
+   }
 }
 </script>
 
@@ -38,17 +40,6 @@ select {
    display: inline-block;
    margin-right: 8px;
 }
-/* .radio-btn label {
-    min-width: 0px !important;
-    padding: 0;
-    margin: 0px 0px 10px 5px;
-    display: inline-block;
-}
-.radio-btn input[type='radio'], 
-.radio-btn input[type='radio'] label{   
-    vertical-align: baseline;
-    margin: 10px;
-}*/
 .radio-btn h3 {
     margin-top: 20px;
     margin-bottom: 5px;

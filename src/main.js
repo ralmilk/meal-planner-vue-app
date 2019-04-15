@@ -15,6 +15,10 @@ Vue.http.options.root = 'http://localhost:50990/api';
 // Vue Router
 Vue.use(VueRouter);
 const router = new VueRouter({ routes });
+router.beforeEach((to, from, next) => {
+   document.title = `Meal Planner - ${to.name}`
+   next()
+ });
 
 // Main Vue Instance
 new Vue({

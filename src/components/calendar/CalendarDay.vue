@@ -2,17 +2,17 @@
    <div class='day-wrapper' :class="dow">
       <div class='calendar-day' :class="getMonthClass()">
          <p class='calendar-date'>{{ date }}</p>
-         <meal v-for="(meal, index) in meals" 
+         <calendar-meal v-for="(meal, index) in meals" 
                :key="index"
                :dow="dow"
                :meal="meals[index]">
-         </meal>
+         </calendar-meal>
       </div>
    </div>
 </template>
 
 <script>
-import Meal from './Meal';
+import CalendarMeal from './CalendarMeal';
 
 export default {
    props: {
@@ -27,7 +27,7 @@ export default {
       }
    },
    components: {
-      meal: Meal
+      'calendar-meal': CalendarMeal
    }
 }
 </script>

@@ -4,7 +4,7 @@
          <span class='warning' v-if='this.warning !== ""'>{{ warning }}</span>
          <input class='btn' @click.prevent='saveIngredient()' type='submit' value='Save'>
          <a v-if='id !== undefined' class='btn btn-delete' @click='deleteIngredient()'>Delete Ingredient</a>
-         <router-link :to="{ name: 'list', params: { type: 'Ingredient' } }" 
+         <router-link :to="{ name: 'List', params: { type: 'Ingredient' } }" 
                       class='btn'><a>Cancel</a>
          </router-link>   
       </div>
@@ -38,7 +38,9 @@ import { mapGetters } from 'vuex';
 import TheFormTemplate from '../TheFormTemplate';
 
 export default {
-   props: ['id'],
+   props: {
+      id: Number
+   },
    data: function() {
       return {
          // display data

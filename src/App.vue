@@ -1,6 +1,6 @@
 <template>
    <div id="app">
-      <the-header></the-header>
+      <the-header :pageTitle="pageTitle"></the-header>
       <div id="main">
          <transition name='fade-fast' mode="out-in">
             <keep-alive include='the-calendar'>
@@ -21,13 +21,17 @@ import TheHeader from './components/shared/TheHeader';
 import TheFooter from './components/shared/TheFooter';
 import TheCalendar from './components/calendar/TheCalendar';
 import TheMealForm from './components/forms/meal/TheMealForm';
-import TheSettings from './components/settings/TheSettings';
 import TheRecipeForm from './components/forms/recipe/TheRecipeForm.vue';
 import TheIngredientForm from './components/forms/ingredient/TheIngredientForm.vue';
 import TheList from './components/list/TheList';
-import Modal from './components/shared/Modal';
+import AppModal from './components/shared/AppModal';
 
 export default {
+   data() {
+      return {
+         pageTitle: ''
+      }
+   },
    methods: {
       ...mapActions({
          initCategories: 'categories/initialize',
@@ -47,17 +51,20 @@ export default {
    },
    created() {
       this.initializeStore();
+      this.pageTitle = document.title.split('-')[1];
+   },
+   updated() {
+      this.pageTitle = document.title.split('-')[1];
    },
    components: {
       'the-header': TheHeader,
       'the-footer': TheFooter,
       'the-calendar': TheCalendar,
-      'the-settings': TheSettings,
       'the-meal-form' : TheMealForm,
       'the-recipe-form' : TheRecipeForm,
       'the-ingredient-form' : TheIngredientForm,
       'the-list' : TheList,
-      'modal' : Modal
+      'app-modal' : AppModal
    }
 }
 </script>

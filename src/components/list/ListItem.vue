@@ -5,7 +5,7 @@
          <span class='item-name'>{{ type === 'Recipe' ? item.Title : item.Description }}</span>
 
          <span class='edit-delete' v-if='!item.isDeleted'>
-               <router-link :to='{ name: type.toLowerCase(), params: { id: item.Id } }' 
+               <router-link :to='{ name: type, params: { id: item.Id } }' 
                            tag='i' 
                            class='fas fa-pencil-alt'>
                </router-link>

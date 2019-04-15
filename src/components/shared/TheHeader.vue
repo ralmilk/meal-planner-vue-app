@@ -1,7 +1,7 @@
 <template>
    <header>
       <div class='container-width'>
-         <router-link :to="{ name: 'calendar' }">
+         <router-link :to="{ name: 'Calendar' }">
             <img src='../../assets/logo.png' 
               id='header-logo' 
               alt='Meal Planner Logo'>
@@ -9,30 +9,30 @@
       </div>
       <div id='navbar-top'>
          <ul class='container-width'>
-            <router-link :to="{name: 'list', params: { type: 'Recipe'}}" 
+            <router-link :to="{name: 'List', params: { type: 'Recipe'}}" 
                          tag='li' 
                          class="navbar-link" 
                          exact>Recipes
             </router-link>
-            <router-link :to="{name: 'list', params: { type: 'Ingredient'}}" 
-                         tag='li' 
-                         class="navbar-link" 
-                         exact>Ingredients
-            </router-link>
-            <router-link :to="{name: 'settings'}" 
+            <router-link :to="{name: 'List', params: { type: 'Ingredient'}}" 
                          tag='li' 
                          class="navbar-link no-right" 
-                         exact>Settings
+                         exact>Ingredients
             </router-link>
          </ul>
       </div>
       <div id='navbar-bottom'>
-         <p class='container-width'>Meal Plan</p>
+         <p class='container-width'>{{ pageTitle }}</p>
       </div>
    </header>
 </template>
 
 <script>
+export default {
+   props: {
+      pageTitle: String
+   }
+}
 </script>
 
 <style>

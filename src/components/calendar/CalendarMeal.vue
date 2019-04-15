@@ -1,5 +1,5 @@
 <template>
-   <router-link :to="{ name: 'meal', params: { id: meal.id } }">
+   <router-link :to="{ name: 'Meal', params: { id: meal.id } }">
       <div
          v-if="meal" class='meal pointer' 
          :class="[meal.mealType, checkPrepDayStatus()]" 

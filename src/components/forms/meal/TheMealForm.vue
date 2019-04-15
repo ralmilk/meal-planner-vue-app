@@ -1,6 +1,6 @@
 <template>
    <div>
-      <the-modal :showModal='showModal' :text='modalText'></the-modal>
+      <app-modal :showModal='showModal' :text='modalText'></app-modal>
       <the-form-template :type="'meal'"> 
          <div id='topbar' slot='topbar-content'>
             <div class='radio-btn'>
@@ -18,7 +18,7 @@
 
             <button class='btn' id='meal-submit-btn' @click.prevent='submit'>Save</button>
             <a v-if='id !== undefined' class='btn btn-delete' @click='deleteMeal'>Delete Meal</a>
-            <router-link :to="{ name: 'calendar' }" 
+            <router-link :to="{ name: 'Calendar' }" 
                         class='btn'><a>Cancel</a>
             </router-link> 
          </div>
@@ -99,10 +99,12 @@ import TheFormTemplate from '../TheFormTemplate';
 import TheMealSelections from './TheMealSelections.vue';
 import CustomRadioButton from '../CustomRadioButton.vue';
 import CustomCheckbox from '../CustomCheckbox.vue';
-import Modal from '../../shared/Modal';
+import AppModal from '../../shared/AppModal';
 
 export default {
-   props: ['id'],
+   props: {
+      id: Number
+   },
    data: function() {
       return {
          // form display properties/helpers
@@ -348,7 +350,7 @@ export default {
       'the-meal-selections': TheMealSelections,
       'custom-radio-button': CustomRadioButton,
       'custom-checkbox': CustomCheckbox,
-      'the-modal': Modal
+      'app-modal': AppModal
    }
 }
 </script>

@@ -24,7 +24,10 @@
 <script>
 import {eventBus} from '../../main.js';
 export default {
-   props: ['text','showModal'],
+   props: {
+      text: String,
+      showModal: Boolean
+   },
    methods: {
       sendModalResponse(response) {
          eventBus.$emit('modalResponse', response);

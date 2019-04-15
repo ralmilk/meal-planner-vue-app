@@ -4,7 +4,7 @@
          <span class='warning' v-if='this.warning !== ""'>{{ warning }}</span>
          <input class='btn' @click.prevent='saveRecipe()' type='submit' value='Save'>
          <a v-if='id !== undefined' class='btn btn-delete' @click='deleteRecipe()'>Delete Recipe</a>
-         <router-link :to="{ name: 'list', params: { type: 'Recipe' } }" 
+         <router-link :to="{ name: 'List', params: { type: 'Recipe' } }" 
                       class='btn'><a>Cancel</a>
          </router-link>   
       </div>
@@ -86,7 +86,9 @@ import TheRecipeIngredientList from '../recipe/TheRecipeIngredientList';
 import { mapGetters } from 'vuex';
 
 export default {
-   props: ['id'],
+   props: {
+      id: Number
+   },
    data: function() {
       return {
          // display data

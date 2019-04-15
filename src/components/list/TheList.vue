@@ -4,7 +4,7 @@
          <div id='search-topbar'>    
             <label for='search'>Search: </label>
             <input type='text' name='search' v-model='searchString'>
-            <router-link :to="{ name: type.toLowerCase() }" class='btn'>Add New {{ type }}</router-link>
+            <router-link :to="{ name: type }" class='btn'>Add New {{ type }}</router-link>
             <toggle-switch :rightDescr="showDeleted ? 'Hide Deleted' : 'Show Deleted'"></toggle-switch>
          </div>
       </div>
@@ -24,7 +24,9 @@ import TheListTable from './TheListTable';
 import ToggleSwitch from '../forms/ToggleSwitch';
 
 export default {
-   props: ['type'],
+   props: {
+      type: String
+   },
    data() {
       return {
          searchString: '',

@@ -57,7 +57,9 @@ import { mapGetters } from 'vuex';
 import RecipeIngredient from './RecipeIngredient';
 
 export default {
-   props: ['ingredients'],
+   props: {
+      ingredients: Array
+   },
    data() {
       return {
          warning: '',

@@ -13,7 +13,11 @@
 <script>
 import { eventBus } from '../../../main.js';
 export default {
-   props: ['evenOdd', "ingredient", "index"],
+   props: {
+      evenOdd: Boolean, 
+      ingredient: Object, 
+      index: Number
+   },
    methods: {
       getNameString() {
          return `${this.ingredient.Quantity} ${this.ingredient.Unit.Description} ${this.ingredient.Description}`;
