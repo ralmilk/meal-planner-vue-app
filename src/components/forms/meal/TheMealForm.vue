@@ -132,16 +132,6 @@ export default {
             MealComponents: []
          }
       };
-   }, 
-   watch: {
-      category() {
-         this.warning = '';
-      }
-   },
-   computed: {
-      ...mapGetters({
-         categories: 'categories/getAll'
-      })
    },
    methods: {
       getMeal() {
@@ -317,6 +307,16 @@ export default {
             }
          }
       }     
+   }, 
+   computed: {
+      ...mapGetters({
+         categories: 'categories/getAll'
+      })
+   },
+   watch: {
+      category() {
+         this.warning = '';
+      }
    },
    created() {
       if(this.id) this.getMeal();

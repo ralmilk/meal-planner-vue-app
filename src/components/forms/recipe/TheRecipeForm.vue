@@ -115,19 +115,6 @@ export default {
          }
       };
    },
-   created() {
-      if(this.id) {
-         this.getRecipe();
-      }
-   },
-   computed: {
-      ...mapGetters({
-         categories: 'categories/getAll',
-         subcategories: 'subcategories/getAll',
-         difficulties: 'difficulties/getAll',
-         genres: 'genres/getAll'
-      })
-   },
    methods: {
       getRecipe() {
          this.$http.get(`recipe/${this.id}`)
@@ -155,6 +142,19 @@ export default {
       },
       resetForm() {
          
+      }
+   },
+   computed: {
+      ...mapGetters({
+         categories: 'categories/getAll',
+         subcategories: 'subcategories/getAll',
+         difficulties: 'difficulties/getAll',
+         genres: 'genres/getAll'
+      })
+   },
+   created() {
+      if(this.id) {
+         this.getRecipe();
       }
    },
    components: {

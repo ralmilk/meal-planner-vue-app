@@ -16,14 +16,14 @@ export default {
       dow: String
    },
    methods: {
+      checkPrepDayStatus() {
+         return this.meal.isPrepDay ? 'prep-day' : '' ;
+      },
       getWidth() {
          if(this.meal.isPrepDay && this.dow != 'saturday') 
             return `calc(100%/7 + 5px)`
          else 
             return `calc((100%/7) * ${this.meal.servings})`;
-      },
-      checkPrepDayStatus() {
-         return this.meal.isPrepDay ? 'prep-day' : '' ;
       }
    }
 }

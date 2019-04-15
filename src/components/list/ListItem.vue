@@ -45,16 +45,6 @@ export default{
          showDeleted: false
       }
    },
-   created() {
-      this.determineDeletedStatus();
-      
-      eventBus.$on('switchToggled', (type) => {
-         if(type === 'showDeleted') {
-            this.showDeleted = !this.showDeleted;
-            this.determineDeletedStatus();
-         }
-      });
-   },
    methods: {
       determineDeletedStatus(){
          if(this.item.isDeleted && !this.showDeleted){
@@ -71,6 +61,16 @@ export default{
          alert(`delete me! ${this.item.id}`);
          // TODO: set item activeflag to 'N' in db
       }
+   },
+   created() {
+      this.determineDeletedStatus();
+      
+      eventBus.$on('switchToggled', (type) => {
+         if(type === 'showDeleted') {
+            this.showDeleted = !this.showDeleted;
+            this.determineDeletedStatus();
+         }
+      });
    }
 }
 </script>

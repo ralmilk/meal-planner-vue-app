@@ -57,16 +57,6 @@ export default {
          }
       };
    },
-   created() {
-      if(this.id) {
-         this.getIngredient();
-      }
-   },
-   computed: {
-      ...mapGetters({
-         units: 'units/getAll'
-      }),
-   },
    methods: {
       getIngredient() {
          this.$http.get(`ingredient/${this.id}`)
@@ -78,7 +68,6 @@ export default {
             }, error => console.log(error));
       },
       saveIngredient() {
-         // TODO: verify required fields
          if(this.description === '' || this.quantity <= 0 || this.cost <= 0) {
             this.warning = 'Please include all required fields.';
          }
@@ -96,6 +85,16 @@ export default {
          this.quantity = 0;
          this.unit = 1;
          this.cost = 0;
+      }
+   },
+   computed: {
+      ...mapGetters({
+         units: 'units/getAll'
+      }),
+   },
+   created() {
+      if(this.id) {
+         this.getIngredient();
       }
    },
    components: {

@@ -35,40 +35,6 @@ export default {
          fetched: false
       }
    },
-   created() {
-      if(this.type === 'Ingredient') {
-         this.fetchAllIngredients();
-      } else if (this.type === 'Recipe') {
-         this.fetchAllRecipes();
-      }
-
-      eventBus.$on('switchToggled', (type) => {
-         if(type === 'showDeleted') {
-            this.showDeleted = !this.showDeleted;
-         }
-      });
-   },
-   computed: {
-      shownItems() {
-         return this.items.filter(item => {
-            if(this.type === 'Ingredient') {
-               return (item.Description || '').includes(this.searchString) && (item.ActiveFlg === 'Y' || this.showDeleted);
-            } else if (this.type === 'Recipe') {
-               return (item.Title || '').includes(this.searchString) && (item.ActiveFlg === 'Y' || this.showDeleted);
-            }
-         });
-      }
-   },
-   watch: {
-      type() {
-         this.fetched = false;
-         if(this.type === 'Ingredient') {
-            this.fetchAllIngredients();
-         } else if (this.type === 'Recipe') {
-            this.fetchAllRecipes();
-         }
-      }
-   },
    methods: {
       fetchAllIngredients() {
          let result = [];
@@ -96,6 +62,40 @@ export default {
                this.fetched = true;
             });
       }
+   },
+   computed: {
+      shownItems() {
+         return this.items.filter(item => {
+            if(this.type === 'Ingredient') {
+               return (item.Description || '').includes(this.searchString) && (item.ActiveFlg === 'Y' || this.showDeleted);
+            } else if (this.type === 'Recipe') {
+               return (item.Title || '').includes(this.searchString) && (item.ActiveFlg === 'Y' || this.showDeleted);
+            }
+         });
+      }
+   },
+   watch: {
+      type() {
+         this.fetched = false;
+         if(this.type === 'Ingredient') {
+            this.fetchAllIngredients();
+         } else if (this.type === 'Recipe') {
+            this.fetchAllRecipes();
+         }
+      }
+   },
+   created() {
+      if(this.type === 'Ingredient') {
+         this.fetchAllIngredients();
+      } else if (this.type === 'Recipe') {
+         this.fetchAllRecipes();
+      }
+
+      eventBus.$on('switchToggled', (type) => {
+         if(type === 'showDeleted') {
+            this.showDeleted = !this.showDeleted;
+         }
+      });
    },
    components: {
       'the-list-table': TheListTable,

@@ -37,6 +37,11 @@ export default {
    props: {
       selections: Array
    },
+   methods: {
+      removeSelection(type, index = -1) {
+         eventBus.$emit('selectionDeleted', index);
+      }
+   },
    computed: {
       entree() {
          return this.selections.map((el, index) => {
@@ -67,11 +72,6 @@ export default {
                };
             }
          }).filter(el => el !== undefined);
-      }
-   },
-   methods: {
-      removeSelection(type, index = -1) {
-         eventBus.$emit('selectionDeleted', index);
       }
    }
 }

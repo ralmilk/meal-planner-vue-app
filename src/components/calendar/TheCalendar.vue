@@ -52,24 +52,6 @@ export default {
          mealMatrix: []
       }
    },
-   computed: {
-      ...mapGetters({
-         mealsJson: 'meals/getMeals'
-      })
-   },
-   watch: {
-      mealsJson() {
-         this.processMeals();
-         this.buildMealsMatrix();
-      }
-   },
-   created(){
-      this.setUp(true);
-      eventBus.$on('arrowClicked', (direction) => {
-         this.updateMonth(direction);
-         this.setUp(false);
-      });
-   }, 
    methods: {
       ...mapActions({
          getMealsByDateRange: 'meals/getMealsByDateRange'
@@ -347,6 +329,24 @@ export default {
          });
          this.mealMatrix = mealMatrix;
       }
+   },
+   computed: {
+      ...mapGetters({
+         mealsJson: 'meals/getMeals'
+      })
+   },
+   watch: {
+      mealsJson() {
+         this.processMeals();
+         this.buildMealsMatrix();
+      }
+   },
+   created(){
+      this.setUp(true);
+      eventBus.$on('arrowClicked', (direction) => {
+         this.updateMonth(direction);
+         this.setUp(false);
+      });
    },
    components: {
       'calendar-week': CalendarWeek,
