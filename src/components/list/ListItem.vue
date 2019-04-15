@@ -1,10 +1,10 @@
 <template>
    <div class='list-item' :style="itemStyle" 
-                          :class="[evenOdd, item.ActiveFlg === 'N' ? 'deleted' : '']">
+                        :class="[evenOdd, item.ActiveFlg === 'N' ? 'deleted' : '']">
       <p>
          <span class='item-name'>{{ type === 'Recipe' ? item.Title : item.Description }}</span>
 
-         <span class='edit-delete' v-if='!item.isDeleted'>
+         <span class='edit-delete' v-if="item.ActiveFlg === 'Y'">
                <router-link :to='{ name: type, params: { id: item.Id } }' 
                            tag='i' 
                            class='fas fa-pencil-alt'>
@@ -31,11 +31,11 @@
 <script>
 import { eventBus } from '../../main.js';
 
-export default{
+export default {
    props: {
-      'type': String, // Recipe/Ingredient
-      'evenOdd': String,
-      'item': Object
+      type: String, // Recipe/Ingredient
+      evenOdd: String,
+      item: Object
    },
    data() {
       return {
@@ -54,12 +54,17 @@ export default{
          }
       },
       reAddItem() {
-         alert(`readd me! ${this.item.id}`);
-         // TODO: readd item to the database (change active flag)
+         // patch is for the readd-call
+         this.$http.patch(`${this.type.toLowerCase()}/${this.item.Id}`)
+            .then(response => console.log(`successfully readded item`),
+                  error => console.log(error));
+         eventBus.$emit('listItemReadded', this.item.Id);
       },
       deleteItem() {
-         alert(`delete me! ${this.item.id}`);
-         // TODO: set item activeflag to 'N' in db
+         this.$http.delete(`${this.type.toLowerCase()}/${this.item.Id}`)
+            .then(response => console.log(`successfully deleted item`), 
+                  error => console.log(error));
+         eventBus.$emit('listItemDeleted', this.item.Id);
       }
    },
    created() {

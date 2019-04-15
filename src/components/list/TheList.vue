@@ -96,6 +96,14 @@ export default {
             this.showDeleted = !this.showDeleted;
          }
       });
+      eventBus.$on('listItemDeleted', (id) => {
+         let deletedItem = this.items.find(x => x.Id === id);
+         deletedItem.ActiveFlg = 'N';
+      });
+      eventBus.$on('listItemReadded', (id) => {
+         let deletedItem = this.items.find(x => x.Id === id);
+         deletedItem.ActiveFlg = 'Y';
+      });
    },
    components: {
       'the-list-table': TheListTable,
