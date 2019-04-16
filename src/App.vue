@@ -3,7 +3,7 @@
       <the-header :pageTitle="pageTitle"></the-header>
       <div id="main">
          <transition name='fade-fast' mode="out-in">
-            <keep-alive include='the-calendar'>
+            <keep-alive include='the-calendar' :max='1'>
                <router-view></router-view>
             </keep-alive>
          </transition>

@@ -6,7 +6,7 @@
          :dow="dayOfWeekClass[index]"
          :date="week[index]"
          :isCurrentMonth="checkMonth(index)"
-         :meals="meals[index]">
+         :meals="meals ? meals[index] : []">
       </calendar-day>
    </div>
 </template>

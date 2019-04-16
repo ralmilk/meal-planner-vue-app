@@ -43,7 +43,7 @@ export default {
                return response.json();
             })
             .then(data => data.forEach(cur => result.push(cur)), 
-                  error => console.log(error))
+                  error => {})
             .then(() => {
                this.items = result;
                this.fetched = true;
@@ -56,7 +56,7 @@ export default {
                return response.json();
             })
             .then(data => data.forEach(cur => result.push(cur)), 
-                  error => console.log(error))
+                  error => {})
             .then(() => {
                this.items = result;
                this.fetched = true;

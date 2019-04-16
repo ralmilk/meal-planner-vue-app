@@ -166,7 +166,7 @@ export default {
                      return response.json();
                   })
                   .then(data => data.forEach(cur => result.push(cur)), 
-                        error => console.log(error))
+                        error => {})
                   .then(() => {
                      this.searchResults = result;
                   });
@@ -176,7 +176,7 @@ export default {
                      return response.json();
                   })
                   .then(data => data.forEach(cur => result.push(cur)), 
-                        error => console.log(error))
+                        error => {})
                   .then(() => {
                      this.searchResults = result;
                   });
@@ -222,7 +222,7 @@ export default {
                this.$http.delete(`meal/${this.id}`)
                   .then(response => console.log(response))
                   .then(data => console.log(`successfully completed callback: ${this.id}`),
-                        error => console.log(error))
+                        error => {})
                   .then(() => {
                      this.$router.push({name: 'Calendar'});
                   });
@@ -245,7 +245,7 @@ export default {
             if (mealId) {
                this.$http.put(`meal/${mealId}`, this.meal)
                   .then(response => console.log(`successfully updated meal: ${mealId}`),
-                        error => console.log(error))
+                        error => {})
                   .then(() => {
                      if (this.meal.MealType === 'R') {
                         this.$router.push({name: 'Calendar'});
@@ -262,7 +262,7 @@ export default {
                   .then(data => { 
                      mealId = data.Id;
                      console.log(`successfully added meal`)
-                  }, error => console.log(error))
+                  }, error => {})
                   .then(() => {
                      if (this.meal.MealType === 'R') {
                         this.$router.push({name: 'Calendar'});
@@ -289,7 +289,7 @@ export default {
          this.deletedComponentIds.forEach((id) => {
             this.$http.delete(`mealComponent/${id}`)
                .then(response => console.log(`successfully deleted meal component`),
-                     error => console.log(error));
+                     error => {});
          });
 
          // add new meal components
@@ -298,7 +298,7 @@ export default {
             if (el.Id === 0) { // add new component
                this.$http.post(`mealComponent`, el)
                   .then(response => console.log(`successfully added meal component`),
-                        error => console.log(error))
+                        error => {})
                   .then(() => {
                      if (index === componentCount - 1) {
                         this.$router.push({name: 'Calendar'});

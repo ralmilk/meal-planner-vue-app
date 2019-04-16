@@ -1,82 +1,85 @@
 <template>
-   <the-form-template :type="'recipe'"> 
-      <div id='topbar' slot='topbar-content'>
-         <span class='warning' v-if='this.warning !== ""'>{{ warning }}</span>
-         <input class='btn' @click.prevent='submit()' type='submit' value='Save'>
-         <a v-if='id !== undefined' class='btn btn-delete' @click='deleteRecipe()'>Delete Recipe</a>
-         <router-link :to="{ name: 'List', params: { type: 'Recipe' } }" 
-                      class='btn'><a>Cancel</a>
-         </router-link>   
-      </div>
-
-      <div slot='form-body' v-if='recipe !== undefined'>
-         <div id='recipe-detail-container'>
-            <div id='recipe-details'>
-               <h2>Details</h2>         
-
-               <label for='title'>Title *</label>
-               <input autofocus type='text' name='title' v-model='recipe.Title'><br>
-            
-               <span class='textarea-group'>
-                  <label for='description'>Description</label>
-                  <textarea name="description" v-model='recipe.Description'></textarea>
-               </span>
-
-               <span class='float-left'>
-                  <label for='prepTime'>Prep Time *</label>
-                  <input type='number' name='prepTime' step='5' v-model='recipe.PrepTime'>
-               </span>
-
-               <span class='float-left'>
-                  <label for='cookTime'>Cook Time *</label>
-                  <input type='number' name='cookTime' step='5' v-model='recipe.CookTime'>
-               </span>
-
-               <span class='float-left'>
-                  <label for='category'>Category *</label>
-                  <select name='category' v-model='recipe.CategoryId'>
-                     <option v-for='cat in categories' 
-                             :key='cat.Id' 
-                             :value='cat.Id'>{{ cat.Description }}
-                     </option>
-                  </select>
-               </span>
-
-               <span class='float-left'>
-                  <label for='subcategory'>Sub-Category *</label>
-                  <select name='subcategory' v-model='recipe.SubcategoryId'>
-                     <option v-for='subcat in subcategories' 
-                           :key='subcat.Id' 
-                           :value='subcat.Id'>{{ subcat.Description }}
-                     </option>
-                  </select>
-               </span>
-
-               <span class='float-left'>
-                  <label for='difficulty'>Diffculty *</label>
-                  <select required name='difficulty' v-model='recipe.DifficultyId'>
-                     <option v-for='diff in difficulties' 
-                             :key='diff.Id' 
-                             :value='diff.Id'>{{ diff.Description }}
-                     </option>
-                  </select>
-               </span>
-
-               <span class='float-left'>
-                  <label for='genre'>Genre *</label>
-                  <select required name='genre' v-model='recipe.GenreId'>
-                     <option v-for='gen in genres' 
-                             :key='gen.Id' 
-                             :value='gen.Id'>{{ gen.Description }}
-                     </option>
-                  </select>
-               </span>
-            </div>
+   <div>
+      <app-modal :showModal='showModal' :text='modalText'></app-modal>
+      <the-form-template :type="'recipe'"> 
+         <div id='topbar' slot='topbar-content'>
+            <span class='warning' v-if='this.warning !== ""'>{{ warning }}</span>
+            <input class='btn' @click.prevent='submit()' type='submit' value='Save'>
+            <a v-if='id !== undefined' class='btn btn-delete' @click='deleteRecipe()'>Delete Recipe</a>
+            <router-link :to="{ name: 'List', params: { type: 'Recipe' } }" 
+                        class='btn'><a>Cancel</a>
+            </router-link>   
          </div>
 
-         <the-recipe-ingredient-list v-if='ingredientsLoaded' :ingredients='ingredients'></the-recipe-ingredient-list>
-      </div>
-   </the-form-template>
+         <div slot='form-body' v-if='recipe !== undefined'>
+            <div id='recipe-detail-container'>
+               <div id='recipe-details'>
+                  <h2>Details</h2>         
+
+                  <label for='title'>Title *</label>
+                  <input autofocus type='text' name='title' v-model='recipe.Title'><br>
+               
+                  <span class='textarea-group'>
+                     <label for='description'>Description</label>
+                     <textarea name="description" v-model='recipe.Description'></textarea>
+                  </span>
+
+                  <span class='float-left'>
+                     <label for='prepTime'>Prep Time *</label>
+                     <input type='number' name='prepTime' step='5' v-model='recipe.PrepTime'>
+                  </span>
+
+                  <span class='float-left'>
+                     <label for='cookTime'>Cook Time *</label>
+                     <input type='number' name='cookTime' step='5' v-model='recipe.CookTime'>
+                  </span>
+
+                  <span class='float-left'>
+                     <label for='category'>Category *</label>
+                     <select name='category' v-model='recipe.CategoryId'>
+                        <option v-for='cat in categories' 
+                              :key='cat.Id' 
+                              :value='cat.Id'>{{ cat.Description }}
+                        </option>
+                     </select>
+                  </span>
+
+                  <span class='float-left'>
+                     <label for='subcategory'>Sub-Category *</label>
+                     <select name='subcategory' v-model='recipe.SubcategoryId'>
+                        <option v-for='subcat in subcategories' 
+                              :key='subcat.Id' 
+                              :value='subcat.Id'>{{ subcat.Description }}
+                        </option>
+                     </select>
+                  </span>
+
+                  <span class='float-left'>
+                     <label for='difficulty'>Diffculty *</label>
+                     <select required name='difficulty' v-model='recipe.DifficultyId'>
+                        <option v-for='diff in difficulties' 
+                              :key='diff.Id' 
+                              :value='diff.Id'>{{ diff.Description }}
+                        </option>
+                     </select>
+                  </span>
+
+                  <span class='float-left'>
+                     <label for='genre'>Genre *</label>
+                     <select required name='genre' v-model='recipe.GenreId'>
+                        <option v-for='gen in genres' 
+                              :key='gen.Id' 
+                              :value='gen.Id'>{{ gen.Description }}
+                        </option>
+                     </select>
+                  </span>
+               </div>
+            </div>
+
+            <the-recipe-ingredient-list v-if='ingredientsLoaded' :ingredients='ingredients'></the-recipe-ingredient-list>
+         </div>
+      </the-form-template>
+   </div>
 </template>
 
 <script>
@@ -84,6 +87,7 @@ import { eventBus } from '../../../main.js';
 import { mapGetters } from 'vuex';
 import TheFormTemplate from '../TheFormTemplate';
 import TheRecipeIngredientList from '../recipe/TheRecipeIngredientList';
+import AppModal from '../../shared/AppModal.vue';
 
 export default {
    props: {
@@ -94,6 +98,11 @@ export default {
          // display data
          warning: '',
          ingredientsLoaded: false,
+
+         /* Modal fields */
+         modalText: '',
+         showModal: false,
+         callback: Object,
 
          recipe: {
             Title: '',
@@ -118,7 +127,7 @@ export default {
             })
             .then(data => {
                this.recipe = data;
-            }, error => console.log(error));
+            }, error => {});
 
          let tempIngredients = [];
          this.$http.get(`recipeIngredient/full/${this.id}`)
@@ -126,7 +135,7 @@ export default {
                return response.json();
             })
             .then(data => data.forEach(cur => tempIngredients.push(cur)),
-                  error => console.log(error))
+                  error => {})
             .then(() => {
                this.ingredients = tempIngredients;
                this.ingredientsLoaded = true;
@@ -143,7 +152,7 @@ export default {
             if (recipeId) {
                this.$http.put(`recipe/${recipeId}`, this.recipe)
                   .then(response => console.log(`successfully updated recipe: ${recipeId}`),
-                        error => console.log(error))
+                        error => {})
                   .then(() => {
                      if (this.ingredients.length === 0) {
                         this.$router.push({name: 'List', params: { type: 'Recipe' }});
@@ -160,7 +169,7 @@ export default {
                   .then(data => { 
                      recipeId = data.Id;
                      console.log(`successfully added recipe`)
-                  }, error => console.log(error))
+                  }, error => {})
                   .then(() => {
                      if (this.ingredients.length === 0) {
                         this.$router.push({name: 'List', params: { type: 'Recipe' }});
@@ -187,7 +196,7 @@ export default {
          this.deletedRecipeIngredientIds.forEach((id) => {
             this.$http.delete(`recipeIngredient/${id}`)
                .then(response => console.log(`successfully deleted recipe ingredient`),
-                     error => console.log(error));
+                     error => {});
          });
 
          // add recipe ingredients, no updating for this group
@@ -196,7 +205,7 @@ export default {
             if (el.Id === 0) { // add new ingredient
                this.$http.post(`recipeIngredient`, el)
                   .then(response => console.log(`successfully added recipe ingredient`),
-                        error => console.log(error))
+                        error => {})
                   .then(() => {
                      if (index === componentCount - 1) {
                         this.$router.push({name: 'List', params: { type: 'Recipe' }});
@@ -210,7 +219,18 @@ export default {
          });
       },
       deleteRecipe() {
-         alert('delete this ingredient');
+         this.modalText = 'Are you sure you want to delete this recipe?';
+         this.showModal = true;
+         this.callback = 
+            function() { 
+               this.$http.delete(`recipe/${this.id}`)
+                  .then(response => console.log(response))
+                  .then(data => console.log(`successfully completed callback: ${this.id}`),
+                        error => {})
+                  .then(() => {
+                     this.$router.push({name: 'List', params: { type: 'Recipe' }});
+                  });
+            };
       }
    },
    computed: {
@@ -224,7 +244,13 @@ export default {
    created() {
       if(this.id) this.getRecipe();
       else this.ingredientsLoaded = true;
-
+      
+      eventBus.$on('modalResponse', (response) => {
+         this.showModal = false;
+         if(response) {
+            this.callback();               
+         }
+      });
       eventBus.$on('addIngredientToList', (ingredient) => {
          this.ingredients.push(ingredient);
       });
@@ -235,7 +261,8 @@ export default {
    },
    components: {
       'the-form-template': TheFormTemplate,
-      'the-recipe-ingredient-list': TheRecipeIngredientList
+      'the-recipe-ingredient-list': TheRecipeIngredientList,
+      'app-modal': AppModal
    }
 }
 </script>

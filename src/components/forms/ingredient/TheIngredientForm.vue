@@ -75,7 +75,7 @@ export default {
             })
             .then(data => {
                this.ingredient = data;
-            }, error => console.log(error));
+            }, error => {});
       },
       submit() {
          if(this.ingredient.Description === '' || this.ingredient.Quantity <= 0 || this.ingredient.Cost <= 0) {
@@ -85,7 +85,7 @@ export default {
                this.$http.put(`ingredient/${this.id}`, this.ingredient)
                   .then(response => { 
                      console.log(`successfully saved ingredient`)
-                  }, error => console.log(error))
+                  }, error => {})
                   .then(() => {
                      this.$router.push({name: 'List', params: { type: 'Ingredient' }});
                   });
@@ -93,7 +93,7 @@ export default {
             this.$http.post(`ingredient`, this.ingredient)
                .then(response => { 
                   console.log(`successfully added ingredient`)
-               }, error => console.log(error))
+               }, error => {})
                .then(() => {
                   this.$router.push({name: 'List', params: { type: 'Ingredient' }});
                });
@@ -108,7 +108,7 @@ export default {
                this.$http.delete(`ingredient/${this.id}`)
                   .then(response => { 
                      console.log(`successfully deleted ingredient`)
-                  }, error => console.log(error))
+                  }, error => {})
                   .then(() => {
                      this.$router.push({name: 'List', params: { type: 'Ingredient' }});
                   });

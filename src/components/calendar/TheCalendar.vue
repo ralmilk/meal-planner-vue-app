@@ -34,6 +34,7 @@ import TheCalendarControls from './TheCalendarControls';
 import CalendarWeek from './CalendarWeek';
 
 export default {
+   name: 'the-calendar',
    data: function() {
       return {
          // CALENDAR PROPERTIES
