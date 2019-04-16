@@ -118,14 +118,15 @@ export default {
             })
             .then(data => {
                this.recipe = data;
-            });
+            }, error => console.log(error));
 
          let tempIngredients = [];
          this.$http.get(`recipeIngredient/full/${this.id}`)
             .then(response => {
                return response.json();
             })
-            .then(data => data.forEach(cur => tempIngredients.push(cur)))
+            .then(data => data.forEach(cur => tempIngredients.push(cur)),
+                  error => console.log(error))
             .then(() => {
                this.ingredients = tempIngredients;
                this.ingredientsLoaded = true;
@@ -141,6 +142,8 @@ export default {
 
             if (recipeId) {
                this.$http.put(`recipe/${recipeId}`, this.recipe)
+                  .then(response => console.log(`successfully updated recipe: ${recipeId}`),
+                        error => console.log(error))
                   .then(() => {
                      if (this.ingredients.length === 0) {
                         this.$router.push({name: 'List', params: { type: 'Recipe' }});
@@ -156,7 +159,8 @@ export default {
                   })
                   .then(data => { 
                      recipeId = data.Id;
-                  })
+                     console.log(`successfully added recipe`)
+                  }, error => console.log(error))
                   .then(() => {
                      if (this.ingredients.length === 0) {
                         this.$router.push({name: 'List', params: { type: 'Recipe' }});
@@ -181,7 +185,9 @@ export default {
          
          // remove all deleted recipeIngredients
          this.deletedRecipeIngredientIds.forEach((id) => {
-            this.$http.delete(`recipeIngredient/${id}`);
+            this.$http.delete(`recipeIngredient/${id}`)
+               .then(response => console.log(`successfully deleted recipe ingredient`),
+                     error => console.log(error));
          });
 
          // add recipe ingredients, no updating for this group
@@ -189,6 +195,8 @@ export default {
          dbFormatComponents.forEach((el, index) => {
             if (el.Id === 0) { // add new ingredient
                this.$http.post(`recipeIngredient`, el)
+                  .then(response => console.log(`successfully added recipe ingredient`),
+                        error => console.log(error))
                   .then(() => {
                      if (index === componentCount - 1) {
                         this.$router.push({name: 'List', params: { type: 'Recipe' }});
