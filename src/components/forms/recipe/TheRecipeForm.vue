@@ -106,7 +106,8 @@ export default {
             DifficultyId: 1,
             GenreId: 1
          },
-         ingredients: []
+         ingredients: [],
+         deletedRecipeIngredientIds: []
       };
    },
    methods: {
@@ -132,14 +133,81 @@ export default {
             });
       },
       submit() {
-         // TODO: verify required fields
-         if(true) {
-            this.warning = 'Please include all required fields.';
+         if (this.recipe.Title !== ''
+             && this.recipe.PrepTime >= 0
+             && this.recipe.CookTime >= 0)
+         {
+            // store id for use by recipe ingredients
+            let recipeId = this.id;  
+
+            if (recipeId) {
+               this.$http.put(`recipe/${recipeId}`, this.recipe)
+                  .then(response => console.log(`successfully updated recipe: ${recipeId}`),
+                        error => console.log(error))
+                  .then(() => {
+                     if (this.ingredients.length === 0) {
+                        this.$router.push({name: 'List', params: { type: 'Recipe' }});
+                     } else {
+                        this.addAndDeleteIngredients(recipeId);
+                     }
+                  });
+            }
+            else {
+               this.$http.post(`recipe`, this.recipe)
+                  .then(response => {
+                     return response.json();
+                  })
+                  .then(data => { 
+                     recipeId = data.Id;
+                     console.log(`successfully added recipe`)
+                  }, error => console.log(error))
+                  .then(() => {
+                     if (this.ingredients.length === 0) {
+                        this.$router.push({name: 'List', params: { type: 'Recipe' }});
+                     } else {
+                        this.addAndDeleteIngredients(recipeId);
+                     }
+                  });
+            }
          }
-         else {
-            // determine whether it's a save or a create
-            alert('save recipe');
-         }
+      },
+      addAndDeleteIngredients(recipeId) {
+         // format the recipe ingredients for entry into the DB
+         var dbFormatComponents = this.ingredients.map(el => {
+            return {
+               Id: el.Id,
+               Quantity: el.Quantity,
+               IngredientId: el.Ingredient.Id,
+               RecipeId: recipeId,
+               UnitId: el.Unit.Id
+            };
+         });
+         
+         // remove all deleted recipeIngredients
+         this.deletedRecipeIngredientIds.forEach((id) => {
+            this.$http.delete(`recipeIngredient/${id}`)
+               .then(response => console.log(`successfully deleted recipe ingredient`),
+                     error => console.log(error));
+         });
+
+         // add recipe ingredients, no updating for this group
+         let componentCount = dbFormatComponents.length;
+         dbFormatComponents.forEach((el, index) => {
+            if (el.Id === 0) { // add new ingredient
+               this.$http.post(`recipeIngredient`, el)
+                  .then(response => console.log(`successfully added recipe ingredient`),
+                        error => console.log(error))
+                  .then(() => {
+                     if (index === componentCount - 1) {
+                        this.$router.push({name: 'List', params: { type: 'Recipe' }});
+                     }
+                  });
+            } else {
+               if (index === componentCount - 1) {
+                  this.$router.push({name: 'List', params: { type: 'Recipe' }});
+               }
+            }              
+         });
       },
       deleteRecipe() {
          alert('delete this ingredient');
@@ -155,9 +223,14 @@ export default {
    },
    created() {
       if(this.id) this.getRecipe();
+      else this.ingredientsLoaded = true;
 
       eventBus.$on('addIngredientToList', (ingredient) => {
-         this.recipe.Ingredients.push(ingredient);
+         this.ingredients.push(ingredient);
+      });
+      eventBus.$on('deletedRecipeIngredient', (index, id) => {
+         this.deletedRecipeIngredientIds.push(id);
+         this.ingredients.splice(index, 1);
       });
    },
    components: {

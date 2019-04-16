@@ -12,13 +12,19 @@
             <select name='unit' v-model='ingredient.Unit.Id'>
                <option v-for='u in units' 
                      :key='u.Id' 
-                     :value='u.Id'>{{u.Description}}
+                     :value='u.Id'>{{ u.Description }}
                </option>
             </select>
          </span>
          <span class='float-left ingredient-description'>
             <label for='ingredient'>Description*</label><br>
-            <input type='text' name='ingredient' placeholder="Search" @input='searchIngredients' v-model='ingredient.Description'>       
+            <input type='text' 
+                   name='ingredient' 
+                   autocomplete="off" 
+                   placeholder="Search" 
+                   @input='searchIngredients' 
+                   v-model='ingredient.Description'
+            >       
             <div id='search-results' :style='{ height: (searchResults.length * 22) + "px" }'>
                <p class='search-result' 
                   v-for='result in searchResults' 
@@ -43,9 +49,11 @@
          </div>
          <div id='list'>
             <recipe-ingredient v-for='(ingr, index) in ingredients'
-                              :key='ingr.Id'
+                              :key='ingr.Id + ingr.Ingredient.Description'
                               :ingredient='ingr'
-                              :evenOdd='isEvenOrOdd(index)'>
+                              :evenOdd='isEvenOrOdd(index)'
+                              :ingredientCost='ingredientCosts[index]'
+                              :index='index'>
             </recipe-ingredient>
          </div> 
          <div id='list-footer'>
@@ -76,7 +84,8 @@ export default {
             Quantity: 1,
             Unit: {
                Id: 1
-            }
+            },
+            Ingredient: {}
          }
       }
    },
@@ -85,8 +94,8 @@ export default {
          return num % 2 == 0 ? 'even' : 'odd';
       },
       selectIngredient(selectedResult) {
-         this.ingredient.Id = selectedResult.Id;
          this.ingredient.Description = selectedResult.Description;
+         this.ingredient.Ingredient = selectedResult;
          this.searchResults = [];
       },
       searchIngredients() {
@@ -105,14 +114,51 @@ export default {
       },
       addIngredient() {
          if(this.ingredient.Description !== '' && this.ingredient.Quantity > 0) {
+            this.ingredient.Unit = this.units[this.ingredient.Unit.Id - 1];
             eventBus.$emit('addIngredientToList', this.ingredient);
             this.ingredient = {
                Id: 0,
                Description: '',
                Quantity: 1,
-               UnitId: 1
-            }
+               Unit: {
+                  Id: 1
+               },
+               Ingredient: {}
+            };
          }
+      },
+      getCost(ingredient) {
+         // [unitId, amount equivalent to 1 oz]
+         const conversionRates = new Map([
+            [2, 6],        // tsp
+            [3, 2],        // tbsp
+            [4, 0.125],    // cup
+            [5, 1],        // oz
+            [6, 0.0625],   // lb
+            [7, 28.3],     // g
+            [8, 0.0283],   // kg
+            [9, 48],       // dash - 1/8 tsp
+         ]);
+         
+         let cost = 0;
+         const ingrCost = ingredient.Ingredient.Cost;
+         const ingrQty = ingredient.Ingredient.Quantity;
+
+         if(ingredient.Unit.Id === 1) {
+            cost = (ingrCost / ingrQty) * ingredient.Quantity;
+         } else {
+            // recipe ingredient
+            const recipeIngrUnitConvRate = conversionRates.get(ingredient.Unit.Id);
+            const recipeIngrQty = ingredient.Quantity;
+            let recipeQtyOz = recipeIngrQty / recipeIngrUnitConvRate; // recipe quantity in oz
+            
+            // ingredient
+            const ingrUnitConvRate = conversionRates.get(ingredient.Ingredient.Unit.Id);
+            let ingrQtyOz = ingrQty / ingrUnitConvRate; // ingredient quantity in oz
+            let ingrPricePerOz = ingrCost / ingrQtyOz; // price per oz.
+            cost = ingrPricePerOz * recipeQtyOz;
+         }
+         return cost.toFixed(2);
       }
    },
    computed: {
@@ -120,17 +166,19 @@ export default {
          units: 'units/getAll'
       }),
       totalCost() {
-         let counter = 0;
-         (this.ingredients || []).forEach((el) => {
-            counter += el.cost;
+         if(this.ingredientCosts.length > 0) {
+            return this.ingredientCosts.reduce((total, num) => {
+               return ((+total) + (+num)).toFixed(2);
+            });
+         } else {
+            return '0.00';
+         }
+      },
+      ingredientCosts() {
+         return this.ingredients.map((el) => {
+            return this.getCost(el);
          });
-         return counter.toFixed(2);
       }
-   },
-   created(){
-      eventBus.$on('deletedRecipeIngredient', (index) => {
-         this.ingredients.splice(index,1);
-      });
    },
    components: {
       'recipe-ingredient': RecipeIngredient
@@ -257,7 +305,7 @@ h2 {
 }
 #list-header .edit-delete {
     float: right;
-    min-width: 80px;
+    min-width: 60px;
 }
 #list-header .item-cost{   
     float: right;

@@ -250,7 +250,7 @@ export default {
                      if (this.meal.MealType === 'R') {
                         this.$router.push({name: 'Calendar'});
                      } else {
-                        this.addUpdateComponents(mealId);
+                        this.addAndDeleteComponents(mealId);
                      }
                   });
             }
@@ -267,13 +267,13 @@ export default {
                      if (this.meal.MealType === 'R') {
                         this.$router.push({name: 'Calendar'});
                      } else {
-                        this.addUpdateComponents(mealId);
+                        this.addAndDeleteComponents(mealId);
                      }
                   });
             }
          }
       }, 
-      addUpdateComponents(mealId) {
+      addAndDeleteComponents(mealId) {
          // format the meal components for entry into the DB
          var dbFormatComponents = this.meal.MealComponents.map(el => {
             return {
@@ -285,26 +285,17 @@ export default {
             };
          });
          
-         // remove all deleted mealComponents
+         // remove all deleted meal components
          this.deletedComponentIds.forEach((id) => {
             this.$http.delete(`mealComponent/${id}`)
                .then(response => console.log(`successfully deleted meal component`),
                      error => console.log(error));
          });
 
-         // add or update all mealComponents
+         // add new meal components
          let componentCount = dbFormatComponents.length;
          dbFormatComponents.forEach((el, index) => {
-            if (el.Id > 0) {
-               this.$http.put(`mealComponent/${el.Id}`, el)
-                  .then(response => console.log(`successfully updated meal component`),
-                        error => console.log(error))
-                  .then(() => {
-                     if (index === componentCount - 1) {
-                        this.$router.push({name: 'Calendar'});
-                     }
-                  });
-            } else { // add new component
+            if (el.Id === 0) { // add new component
                this.$http.post(`mealComponent`, el)
                   .then(response => console.log(`successfully added meal component`),
                         error => console.log(error))
@@ -313,7 +304,11 @@ export default {
                         this.$router.push({name: 'Calendar'});
                      }
                   });
-            }                
+            } else {
+               if (index === componentCount - 1) {
+                  this.$router.push({name: 'Calendar'});
+               }
+            }              
          });
       }
    }, 
