@@ -105,8 +105,7 @@ export default {
                .then(response => {
                   return response.json();
                })
-               .then(data => data.forEach(cur => result.push(cur)), 
-                     error => console.log(error))
+               .then(data => data.forEach(cur => result.push(cur)))
                .then(() => {
                   this.searchResults = result;
                });

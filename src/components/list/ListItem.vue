@@ -55,15 +55,11 @@ export default {
       },
       reAddItem() {
          // patch is for the readd-call
-         this.$http.patch(`${this.type.toLowerCase()}/${this.item.Id}`)
-            .then(response => console.log(`successfully readded item`),
-                  error => console.log(error));
+         this.$http.patch(`${this.type.toLowerCase()}/${this.item.Id}`);
          eventBus.$emit('listItemReadded', this.item.Id);
       },
       deleteItem() {
-         this.$http.delete(`${this.type.toLowerCase()}/${this.item.Id}`)
-            .then(response => console.log(`successfully deleted item`), 
-                  error => console.log(error));
+         this.$http.delete(`${this.type.toLowerCase()}/${this.item.Id}`);
          eventBus.$emit('listItemDeleted', this.item.Id);
       }
    },
