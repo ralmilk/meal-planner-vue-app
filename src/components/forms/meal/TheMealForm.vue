@@ -98,7 +98,7 @@
 
 <script>
 import { eventBus } from '../../../main.js';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import TheFormTemplate from '../TheFormTemplate';
 import TheMealSelections from './TheMealSelections.vue';
 import CustomRadioButton from '../CustomRadioButton.vue';
@@ -138,6 +138,9 @@ export default {
       };
    },
    methods: {
+      ...mapActions({
+         getMealsByDateRange: 'meals/getMealsByDateRange'
+      }),
       getMeal() {
          this.$http.get(`meal/${this.id}`)
             .then(response => {
@@ -168,6 +171,9 @@ export default {
                   .then(data => data.forEach(cur => result.push(cur)), 
                         error => {})
                   .then(() => {
+                     this.getMealsByDateRange(this.calendarDates);
+                  })
+                  .then(() => {
                      this.searchResults = result;
                   });
             } else {
@@ -177,6 +183,9 @@ export default {
                   })
                   .then(data => data.forEach(cur => result.push(cur)), 
                         error => {})
+                  .then(() => {
+                     this.getMealsByDateRange(this.calendarDates);
+                  })
                   .then(() => {
                      this.searchResults = result;
                   });
@@ -219,13 +228,25 @@ export default {
          this.showModal = true;
          this.callback = 
             function() { 
-               this.$http.delete(`meal/${this.id}`)
-                  .then(response => console.log(response))
-                  .then(data => console.log(`successfully completed callback: ${this.id}`),
-                        error => {})
-                  .then(() => {
-                     this.$router.push({name: 'Calendar'});
-                  });
+               let that = this;
+               that.meal.MealComponents.forEach(el => {
+                  this.$http.delete(`mealComponent/${el.Id}`)
+                     .then(response => console.log(response))
+                     .then(data => console.log(`successfully completed callback`),
+                           error => {})
+                     .then(() => {
+                        this.$http.delete(`meal/${this.id}`)
+                           .then(response => console.log(response))
+                           .then(data => console.log(`successfully completed callback: ${this.id}`),
+                                 error => {})
+                           .then(() => {
+                              this.getMealsByDateRange(this.calendarDates);
+                           })
+                           .then(() => {
+                              this.$router.push({name: 'Calendar'});
+                           });
+                     })
+               });
             };
       },
       submit(){ 
@@ -247,6 +268,9 @@ export default {
                   .then(response => console.log(`successfully updated meal: ${mealId}`),
                         error => {})
                   .then(() => {
+                     this.getMealsByDateRange(this.calendarDates);
+                  })
+                  .then(() => {
                      if (this.meal.MealType === 'R') {
                         this.$router.push({name: 'Calendar'});
                      } else {
@@ -263,6 +287,9 @@ export default {
                      mealId = data.Id;
                      console.log(`successfully added meal`)
                   }, error => {})
+                  .then(() => {
+                     this.getMealsByDateRange(this.calendarDates);
+                  })
                   .then(() => {
                      if (this.meal.MealType === 'R') {
                         this.$router.push({name: 'Calendar'});
@@ -314,7 +341,8 @@ export default {
    }, 
    computed: {
       ...mapGetters({
-         categories: 'categories/getAll'
+         categories: 'categories/getAll',
+         calendarDates: 'meals/getDates'
       })
    },
    watch: {

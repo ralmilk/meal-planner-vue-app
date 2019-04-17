@@ -37,7 +37,7 @@
                   <span class='float-left'>
                      <label for='category'>Category *</label>
                      <select name='category' v-model='recipe.CategoryId'>
-                        <option v-for='cat in categories' 
+                        <option v-for='cat in categoriesNoIngredient' 
                               :key='cat.Id' 
                               :value='cat.Id'>{{ cat.Description }}
                         </option>
@@ -55,7 +55,7 @@
                   </span>
 
                   <span class='float-left'>
-                     <label for='difficulty'>Diffculty *</label>
+                     <label for='difficulty'>Difficulty *</label>
                      <select required name='difficulty' v-model='recipe.DifficultyId'>
                         <option v-for='diff in difficulties' 
                               :key='diff.Id' 
